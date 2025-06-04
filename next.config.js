@@ -1,11 +1,8 @@
-
-import type {NextConfig} from 'next';
-
-const nextConfig: NextConfig = {
-  /* config options here */
-  output: 'export', // Ditambahkan untuk static export
-  basePath: '/ivory-grace-website', // Ditambahkan untuk GitHub Pages subdirektori
-  assetPrefix: '/ivory-grace-website/', // Ditambahkan untuk GitHub Pages subdirektori
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',
+  basePath: '/ivory-grace-website',
+  assetPrefix: '/ivory-grace-website/',
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -29,4 +26,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
