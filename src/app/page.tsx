@@ -1,7 +1,9 @@
+
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import PerfumeCatalog from '@/components/PerfumeCatalog';
+import PriceCatalog from '@/components/PriceCatalog';
 import Footer from '@/components/Footer';
 import { ScrollToTopButton } from '@/components/ScrollToTopButton';
 
@@ -14,6 +16,7 @@ export default function HomePage() {
         <HeroSection />
         <FeaturedProducts />
         <PerfumeCatalog />
+        <PriceCatalog />
         {/* Placeholder for a potential contact section */}
         {/* <section id="contact" className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
