@@ -1,8 +1,13 @@
 /** @type {import('next').NextConfig} */
+
+// Menentukan apakah build ini untuk GitHub Pages
+const isGithubPages = process.env.IS_GITHUB_PAGES === 'true';
+
 const nextConfig = {
-  output: 'export',
-  basePath: '/ivory-grace-website',
-  assetPrefix: '/ivory-grace-website/',
+  // Membuat output kondisional: 'export' hanya untuk build GitHub Pages
+  output: isGithubPages ? 'export' : undefined,
+  basePath: isGithubPages ? '/ivory-grace-website' : undefined,
+  assetPrefix: isGithubPages ? '/ivory-grace-website/' : undefined,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -18,9 +23,9 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-    // Untuk static export di GitHub Pages, gambar perlu di-unoptimize
-    // jika loader default tidak bekerja dengan baik dengan basePath/assetPrefix.
-    unoptimized: true,
+    // Hanya unoptimize gambar jika membangun untuk GitHub Pages
+    // Untuk dev server (Firebase Studio), unoptimized akan false, sehingga optimasi gambar aktif
+    unoptimized: isGithubPages ? true : false,
   },
 };
 

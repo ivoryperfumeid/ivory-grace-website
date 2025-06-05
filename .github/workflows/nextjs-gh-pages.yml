@@ -39,7 +39,8 @@ jobs:
         run: npm ci
 
       - name: Build Next.js app
-        # `basePath` dan `assetPrefix` di next.config.js akan menangani path untuk GitHub Pages
+        env:
+          IS_GITHUB_PAGES: true # Atur environment variable untuk build GitHub Pages
         run: npm run build 
 
       - name: Upload artifact
