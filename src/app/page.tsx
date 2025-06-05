@@ -15,8 +15,8 @@ export default function HomePage() {
       <main className="flex-grow">
         <HeroSection />
         <FeaturedProducts />
-        <PerfumeCatalog />
         <PriceCatalog />
+        <PerfumeCatalog />
         {/* Placeholder for a potential contact section */}
         {/* <section id="contact" className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
