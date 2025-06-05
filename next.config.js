@@ -18,11 +18,9 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-    // Untuk static export di GitHub Pages, gambar mungkin perlu di-unoptimize
+    // Untuk static export di GitHub Pages, gambar perlu di-unoptimize
     // jika loader default tidak bekerja dengan baik dengan basePath/assetPrefix.
-    // Namun, Next.js biasanya menangani ini secara otomatis untuk `next export`.
-    // Jika gambar rusak, kita bisa uncomment ini:
-    // unoptimized: true,
+    unoptimized: true,
   },
 };
 
