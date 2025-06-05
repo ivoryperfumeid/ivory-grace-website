@@ -2,6 +2,7 @@
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FeaturedProducts from '@/components/FeaturedProducts';
+import InspirationSection from '@/components/InspirationSection';
 import PerfumeCatalog from '@/components/PerfumeCatalog';
 import PriceCatalog from '@/components/PriceCatalog';
 import Footer from '@/components/Footer';
@@ -15,6 +16,7 @@ export default function HomePage() {
       <main className="flex-grow">
         <HeroSection />
         <FeaturedProducts />
+        <InspirationSection /> 
         <PriceCatalog />
         <PerfumeCatalog />
         {/* Placeholder for a potential contact section */}
