@@ -8,7 +8,7 @@ export const perfumes: Perfume[] = [
     id: '1',
     name: 'Luminous Bloom Eau de Parfum',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: placeholderVideo,
+    videoSrc: 'https://vimeo.com/1091205091/e1259b256b',
     aiHint: 'perfume bottle floral',
     description: 'A radiant floral fragrance with notes of jasmine, tuberose, and sandalwood. Captures the essence of a garden in full bloom.',
     price: 'Rp 1.250.000',
