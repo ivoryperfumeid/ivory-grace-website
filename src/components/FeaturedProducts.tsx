@@ -33,7 +33,9 @@ const FeaturedProducts = () => {
           clearTimeout(timeoutRef.current);
         }
         timeoutRef.current = setTimeout(() => {
-          videoElement.pause();
+          if (videoElement) { // Check if videoElement still exists
+            videoElement.pause();
+          }
           setHoveredVideoId(null); // Opsional: reset state hover jika ingin berhenti total
         }, 3000);
       }
@@ -62,7 +64,7 @@ const FeaturedProducts = () => {
             {featuredItems.map((item, index) => (
               <div
                 key={item.id}
-                className="group relative w-full overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer aspect-[9/16] sm:aspect-video"
+                className="group relative w-full overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer aspect-[9/16]"
                 onMouseEnter={() => handleMouseEnter(item, index)}
                 onMouseLeave={() => handleMouseLeave(index)}
               >
