@@ -22,16 +22,16 @@ const InspirationCard = ({ inspiration }: InspirationCardProps) => {
   };
 
   return (
-    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full rounded-lg border-border/50">
+    <Card className="group overflow-hidden shadow-lg hover:shadow-xl flex flex-col h-full rounded-lg border-border/50 transform hover:-translate-y-1 transition-all duration-300 ease-in-out">
       <CardHeader className="p-0">
-        <div className="aspect-video relative w-full">
+        <div className="aspect-video relative w-full overflow-hidden">
           <Image
             src={inspiration.imageSrc}
             alt={inspiration.title}
             data-ai-hint={inspiration.aiHint || "fashion style"}
             layout="fill"
             objectFit="cover"
-            className="transition-transform duration-300 group-hover:scale-105"
+            className="transition-transform duration-300 ease-in-out group-hover:scale-105"
           />
         </div>
       </CardHeader>
@@ -50,7 +50,7 @@ const InspirationCard = ({ inspiration }: InspirationCardProps) => {
         {inspiration.perfumeLink && inspiration.perfumeLink.startsWith('/#') ? (
           <Button 
             onClick={handleShopScentClick} 
-            className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+            className="w-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out"
             aria-label={`Lihat ${inspiration.associatedPerfumeName} di katalog`}
           >
             <ShoppingBag className="mr-2 h-4 w-4" /> Lihat Parfum
@@ -59,7 +59,7 @@ const InspirationCard = ({ inspiration }: InspirationCardProps) => {
           <Link href={inspiration.perfumeLink} passHref legacyBehavior>
             <Button 
               asChild 
-              className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+              className="w-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out"
               aria-label={`Lihat ${inspiration.associatedPerfumeName}`}
             >
               <a><ShoppingBag className="mr-2 h-4 w-4" /> Lihat Parfum</a>

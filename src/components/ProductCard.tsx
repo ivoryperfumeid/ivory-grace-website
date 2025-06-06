@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import type { Perfume } from '@/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -9,16 +10,16 @@ interface ProductCardProps {
 
 const ProductCard = ({ perfume }: ProductCardProps) => {
   return (
-    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col h-full rounded-lg border-border/50">
+    <Card className="group overflow-hidden shadow-lg hover:shadow-xl flex flex-col h-full rounded-lg border-border/50 transform hover:-translate-y-1 transition-all duration-300 ease-in-out">
       <CardHeader className="p-0">
-        <div className="aspect-[3/4] relative w-full">
+        <div className="aspect-[3/4] relative w-full overflow-hidden">
           <Image
             src={perfume.imageSrc}
             alt={perfume.name}
             data-ai-hint={perfume.aiHint || "perfume bottle"}
             layout="fill"
             objectFit="cover"
-            className="transition-transform duration-300 group-hover:scale-105"
+            className="transition-transform duration-300 ease-in-out group-hover:scale-105"
           />
         </div>
       </CardHeader>

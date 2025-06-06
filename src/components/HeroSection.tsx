@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -34,7 +35,7 @@ const HeroSection = () => {
           <Button
             size="lg"
             onClick={scrollToCatalog}
-            className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-8 py-3 text-lg font-semibold shadow-lg transition-transform transform hover:scale-105"
+            className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out"
           >
             Explore Our Collection
           </Button>

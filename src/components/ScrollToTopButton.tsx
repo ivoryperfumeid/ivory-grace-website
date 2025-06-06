@@ -46,10 +46,8 @@ export function ScrollToTopButton() {
     }
   };
 
-  // Determine button classes based on isClient and isVisible
-  // On server and initial client render (before isClient is true), this will result in opacity-0
   const buttonClassName = cn(
-    "fixed bottom-4 right-4 z-50 rounded-full p-2 shadow-lg transition-opacity duration-300 bg-accent text-accent-foreground hover:bg-accent/90",
+    "fixed bottom-4 right-4 z-50 rounded-full p-2 shadow-lg hover:shadow-xl bg-accent text-accent-foreground hover:bg-accent/90 transform hover:scale-110 transition-all duration-300 ease-in-out",
     isClient && isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
   );
 
