@@ -13,13 +13,13 @@ const FeaturedProducts = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Bersihkan timeout jika komponen unmount atau hoveredVideoId berubah
+    // Bersihkan timeout jika komponen unmount
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [hoveredVideoId]);
+  }, []); // Empty dependency array, so this only runs on unmount for the timeoutRef
 
   const handleMouseEnter = (item: typeof featuredItems[0], index: number) => {
     if (item.videoSrc && !videoErrorIds.has(item.id)) {
@@ -27,33 +27,47 @@ const FeaturedProducts = () => {
       const videoElement = videoRefs.current[index];
       if (videoElement) {
         videoElement.currentTime = 0; // Mulai dari awal
-        videoElement.play().catch(error => {
-          console.error("Error playing video:", error);
-          // Jika play gagal, anggap sebagai error video juga
-          handleVideoError(item.id, index);
-        });
+        const playPromise = videoElement.play();
+
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            if (error.name === 'AbortError') {
+              // Playback was interrupted by pause(). This is expected with hover effects.
+              // console.log('Video playback interrupted as expected for item:', item.id);
+            } else {
+              // For other errors (e.g., video format not supported, network error),
+              // log it and treat it as a video load failure.
+              console.error("Error attempting to play video:", item.name, error);
+              handleVideoError(item.id, index);
+            }
+          });
+        }
 
         // Hentikan setelah 3 detik
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
         timeoutRef.current = setTimeout(() => {
-          if (videoRefs.current[index]) { // Check if videoElement still exists by ref index
-            videoRefs.current[index]?.pause();
+          const currentVideoElement = videoRefs.current[index];
+          if (currentVideoElement && !currentVideoElement.paused) {
+            currentVideoElement.pause();
           }
-          setHoveredVideoId(null);
+          // Only reset hoveredVideoId if the video that timed out is still the one considered hovered.
+          setHoveredVideoId(prevHoveredId => (prevHoveredId === item.id ? null : prevHoveredId));
         }, 3000);
       }
     }
   };
 
   const handleMouseLeave = (item: typeof featuredItems[0], index: number) => {
-    if (videoErrorIds.has(item.id)) return; // Jangan lakukan apa-apa jika video error
+    if (videoErrorIds.has(item.id)) return; 
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    setHoveredVideoId(null);
+    // Only set hovered to null if this item was the one being hovered
+    setHoveredVideoId(prev => (prev === item.id ? null : prev));
+    
     const videoElement = videoRefs.current[index];
     if (videoElement && !videoElement.paused) {
       videoElement.pause();
@@ -63,16 +77,15 @@ const FeaturedProducts = () => {
   const handleVideoError = (itemId: string, index: number) => {
     setVideoErrorIds(prev => new Set(prev).add(itemId));
     // Pastikan video dihentikan dan state hover direset jika ada error saat hover
-    if (hoveredVideoId === itemId) {
-      const videoElement = videoRefs.current[index];
-      if (videoElement) {
+    const videoElement = videoRefs.current[index];
+    if (videoElement) {
         videoElement.pause();
-      }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      setHoveredVideoId(null);
     }
+    if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+    }
+    // Only set hovered to null if this item was the one being hovered
+    setHoveredVideoId(prev => (prev === itemId ? null : prev));
   };
 
   return (
@@ -105,6 +118,7 @@ const FeaturedProducts = () => {
                       preload="metadata"
                       className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                       onError={() => handleVideoError(item.id, index)}
+                      id={`video-${item.id}`} // Optional: for easier debugging or more specific targeting if needed
                     />
                   ) : (
                     <img
@@ -114,17 +128,12 @@ const FeaturedProducts = () => {
                       className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                     />
                   )}
-                  {/* Overlay hanya muncul jika:
-                      1. Item tidak punya video ATAU video error.
-                      2. ATAU item punya video (dan tidak error) TAPI bukan video yang sedang di-hover.
-                  */}
                   {(!showVideo || (showVideo && hoveredVideoId !== item.id)) && (
                      <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <PlayCircle size={48} className="text-white/80 mb-2 sm:size={64}" />
                       <h3 className="text-sm sm:text-lg font-semibold text-white text-center px-2 sm:px-4 font-headline">{item.name}</h3>
                     </div>
                   )}
-                   {/* Overlay nama produk di bawah, selalu terlihat tipis */}
                   <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/60 to-transparent">
                     <h3 className="text-xs sm:text-md font-semibold text-white font-body truncate">{item.name}</h3>
                   </div>
