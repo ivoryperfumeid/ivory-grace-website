@@ -15,12 +15,13 @@ const FeaturedProducts = () => {
   useEffect(() => {
     const initialSrcs: Record<string, string | undefined> = {};
     featuredItems.forEach(item => {
-      initialSrcs[item.id] = item.videoSrc;
+      initialSrcs[item.id] = item.videoSrc; // This should be the URL with params like title=0, byline=0 etc.
     });
     setCurrentIframeSrcs(initialSrcs);
   }, []); // featuredItems is static based on current data loading
 
   const getRestingSrc = (itemId: string): string | undefined => {
+    // The resting src should already have title=0, byline=0, portrait=0, background=1, controls=0, muted=1, autoplay=0, loop=0
     return perfumes.find(p => p.id === itemId)?.videoSrc;
   };
 
@@ -29,17 +30,11 @@ const FeaturedProducts = () => {
     const restingSrc = getRestingSrc(itemId);
 
     if (restingSrc && restingSrc.includes('vimeo.com')) {
-      let autoplayUrl = restingSrc;
-      // Parameters to add for autoplay. background=1, title=0, etc., are now in restingSrc.
-      const autoplayParams = 'autoplay=1&muted=1';
+      // Modify the restingSrc to enable autoplay.
+      // Resting src is like: ...&autoplay=0&muted=1...
+      // We want: ...&autoplay=1&muted=1...
+      const autoplayUrl = restingSrc.replace('&autoplay=0', '&autoplay=1');
       
-      if (!autoplayUrl.includes('autoplay=1')) { 
-        if (autoplayUrl.includes('?')) {
-          autoplayUrl += `&${autoplayParams}`;
-        } else {
-          autoplayUrl += `?${autoplayParams}`;
-        }
-      }
       setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: autoplayUrl }));
 
       if (previewTimeoutRef.current) {
@@ -47,8 +42,9 @@ const FeaturedProducts = () => {
       }
 
       previewTimeoutRef.current = setTimeout(() => {
-        if (currentlyHoveredItemId === itemId) { // Check if still hovering this item
-          setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: restingSrc }));
+        // Check if the mouse is still hovering over the same item that triggered the timeout
+        if (currentlyHoveredItemId === itemId) { 
+          setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: restingSrc })); // Revert to non-autoplay URL
         }
       }, 5000); 
     }
@@ -62,7 +58,8 @@ const FeaturedProducts = () => {
 
     const restingSrc = getRestingSrc(itemId);
     if (restingSrc && restingSrc.includes('vimeo.com')) {
-      setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: restingSrc }));
+      // Ensure we revert to the URL that has autoplay=0
+      setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: restingSrc.replace('&autoplay=1', '&autoplay=0') }));
     }
 
     if (currentlyHoveredItemId === itemId) {
@@ -88,7 +85,7 @@ const FeaturedProducts = () => {
                 {currentIframeSrcs[item.id] && currentIframeSrcs[item.id]?.includes('vimeo.com') ? (
                   <div className="relative aspect-[9/16] w-full">
                     <iframe
-                      key={currentIframeSrcs[item.id]} 
+                      key={currentIframeSrcs[item.id]} // Force re-render on src change
                       className="absolute top-0 left-0 w-full h-full rounded-t-lg border-2 border-transparent group-hover:border-primary/50 transition-colors"
                       src={currentIframeSrcs[item.id]}
                       title={`Video player for ${item.name}`}

@@ -1,10 +1,14 @@
 
 import type { Perfume } from '@/types';
 
-// URL embed Vimeo dasar
-const vimeoEmbedBaseUrl = "https://player.vimeo.com/video/1091205091?h=e1259b256b";
-// URL embed Vimeo dengan parameter untuk menyembunyikan judul, byline, potret, dan mengatur background mode
-const vimeoEmbedUrlWithParams = `${vimeoEmbedBaseUrl}&title=0&byline=0&portrait=0&background=1`;
+// URL embed Vimeo dasar - video ID dan hashnya
+const vimeoVideoId = "1091205091";
+const vimeoVideoHash = "e1259b256b";
+const vimeoEmbedBaseUrl = `https://player.vimeo.com/video/${vimeoVideoId}?h=${vimeoVideoHash}`;
+
+// URL embed Vimeo dengan parameter untuk menyembunyikan judul, byline, potret, kontrol, dan mengatur background mode
+// autoplay=0&loop=0&muted=1 ensures it's ready for hover interaction
+const vimeoEmbedUrlWithParams = `${vimeoEmbedBaseUrl}&autoplay=0&muted=1&controls=0&loop=0&background=1&transparent=0&title=0&byline=0&portrait=0`;
 
 // Contoh URL video placeholder non-Vimeo.
 const placeholderVideo = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
