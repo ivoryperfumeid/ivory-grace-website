@@ -2,30 +2,24 @@
 'use client';
 
 import { perfumes } from '@/data/perfumes';
-import Image from 'next/image'; // Still needed for items that might not have videoSrc
-import { CirclePlay } from 'lucide-react'; // For fallback icon
+import Image from 'next/image';
+import { CirclePlay } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 const FeaturedProducts = () => {
-  // Filter for items that are featured. We'll handle items with/without videoSrc in the map.
   const featuredItems = perfumes.filter(p => p.isFeatured).slice(0, 4);
-
-  // State to manage the src for each iframe, allowing for dynamic changes for autoplay
   const [currentIframeSrcs, setCurrentIframeSrcs] = useState<Record<string, string | undefined>>({});
   const [currentlyHoveredItemId, setCurrentlyHoveredItemId] = useState<string | null>(null);
   const previewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Initialize iframeSrcs with the videoSrc from perfumes data.
-    // These URLs in perfumes.ts should now already include title=0&byline=0&portrait=0 for Vimeo.
     const initialSrcs: Record<string, string | undefined> = {};
     featuredItems.forEach(item => {
       initialSrcs[item.id] = item.videoSrc;
     });
     setCurrentIframeSrcs(initialSrcs);
-  }, []); // Assuming featuredItems is static. If it could change, add it as a dependency.
+  }, []); // featuredItems is static based on current data loading
 
-  // Helper to get the original "resting" URL for an item (from perfumes.ts)
   const getRestingSrc = (itemId: string): string | undefined => {
     return perfumes.find(p => p.id === itemId)?.videoSrc;
   };
@@ -35,17 +29,14 @@ const FeaturedProducts = () => {
     const restingSrc = getRestingSrc(itemId);
 
     if (restingSrc && restingSrc.includes('vimeo.com')) {
-      // Append autoplay, muted, and background parameters for Vimeo.
       let autoplayUrl = restingSrc;
-      const autoplayParams = 'autoplay=1&muted=1&background=1';
+      // Parameters to add for autoplay. background=1, title=0, etc., are now in restingSrc.
+      const autoplayParams = 'autoplay=1&muted=1';
       
-      // Only add autoplay params if they aren't already in the URL
-      // (e.g. from a very quick mouse leave then mouse enter)
       if (!autoplayUrl.includes('autoplay=1')) { 
         if (autoplayUrl.includes('?')) {
           autoplayUrl += `&${autoplayParams}`;
         } else {
-          // Should not happen if it's a Vimeo embed URL, as it usually has '?h='
           autoplayUrl += `?${autoplayParams}`;
         }
       }
@@ -56,11 +47,10 @@ const FeaturedProducts = () => {
       }
 
       previewTimeoutRef.current = setTimeout(() => {
-        // Only reset if this item is still the one being hovered.
-        if (currentlyHoveredItemId === itemId) {
+        if (currentlyHoveredItemId === itemId) { // Check if still hovering this item
           setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: restingSrc }));
         }
-      }, 5000); // 5-second preview
+      }, 5000); 
     }
   };
 
@@ -71,8 +61,6 @@ const FeaturedProducts = () => {
     }
 
     const restingSrc = getRestingSrc(itemId);
-    // Reset to original "resting" src when mouse leaves, only if it's a Vimeo URL
-    // For non-Vimeo, autoplay isn't explicitly handled this way.
     if (restingSrc && restingSrc.includes('vimeo.com')) {
       setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: restingSrc }));
     }
@@ -98,9 +86,9 @@ const FeaturedProducts = () => {
                 onMouseLeave={() => item.videoSrc && item.videoSrc.includes('vimeo.com') && handleMouseLeave(item.id)}
               >
                 {currentIframeSrcs[item.id] && currentIframeSrcs[item.id]?.includes('vimeo.com') ? (
-                  <div className="relative aspect-[9/16] w-full"> {/* Portrait aspect ratio for iframe */}
+                  <div className="relative aspect-[9/16] w-full">
                     <iframe
-                      key={currentIframeSrcs[item.id]} // Adding key helps React re-render iframe on src change
+                      key={currentIframeSrcs[item.id]} 
                       className="absolute top-0 left-0 w-full h-full rounded-t-lg border-2 border-transparent group-hover:border-primary/50 transition-colors"
                       src={currentIframeSrcs[item.id]}
                       title={`Video player for ${item.name}`}
@@ -111,7 +99,6 @@ const FeaturedProducts = () => {
                     ></iframe>
                   </div>
                 ) : (
-                  // Fallback to image if no videoSrc or if src is not a Vimeo URL (or not ready in state)
                   <div className="aspect-[9/16] relative w-full">
                     <Image
                       src={item.imageSrc}
@@ -121,7 +108,7 @@ const FeaturedProducts = () => {
                       sizes="(max-width: 639px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
                       style={{ objectFit: 'cover' }}
                       className="rounded-t-lg"
-                      priority={index < 2} // Prioritize loading for first few images
+                      priority={index < 2} 
                     />
                     <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-lg">
                       <CirclePlay size={48} className="text-white/80 mb-2" />
