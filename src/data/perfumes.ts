@@ -8,7 +8,7 @@ export const perfumes: Perfume[] = [
     id: '1',
     name: 'Luminous Bloom Eau de Parfum',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: 'https://vimeo.com/1091205091/e1259b256b',
+    videoSrc: 'https://player.vimeo.com/video/1091205091?h=e1259b256b', // Updated to Vimeo embed src
     aiHint: 'perfume bottle floral',
     description: 'A radiant floral fragrance with notes of jasmine, tuberose, and sandalwood. Captures the essence of a garden in full bloom.',
     price: 'Rp 1.250.000',
@@ -18,7 +18,7 @@ export const perfumes: Perfume[] = [
     id: '2',
     name: 'Velvet Oud Extrait de Parfum',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: placeholderVideo,
+    videoSrc: placeholderVideo, // User should update this to an iframe src if this is to be featured as video
     aiHint: 'luxury perfume dark',
     description: 'A rich and mysterious blend of precious oud, velvety rose, and warm amber. An unforgettable and opulent experience.',
     price: 'Rp 2.800.000',
@@ -28,7 +28,7 @@ export const perfumes: Perfume[] = [
     id: '3',
     name: 'Graceful Whisper Eau de Toilette',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: placeholderVideo,
+    videoSrc: placeholderVideo, // User should update this to an iframe src if this is to be featured as video
     aiHint: 'elegant perfume light',
     description: 'A delicate and sophisticated scent featuring notes of white tea, bergamot, and soft musk. Perfect for everyday elegance.',
     price: 'Rp 950.000',
@@ -47,7 +47,7 @@ export const perfumes: Perfume[] = [
     id: '5',
     name: 'Midnight Charm Eau de Parfum',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: placeholderVideo,
+    videoSrc: placeholderVideo, // User should update this to an iframe src if this is to be featured as video
     aiHint: 'perfume bottle night',
     description: 'An alluring and seductive fragrance with notes of black orchid, patchouli, and dark chocolate. For moments of intrigue.',
     price: 'Rp 1.500.000',
@@ -56,7 +56,7 @@ export const perfumes: Perfume[] = [
     id: '6',
     name: 'Sun-kissed Citrus Eau Fraiche',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: placeholderVideo,
+    videoSrc: placeholderVideo, // User should update this to an iframe src if this is to be featured as video
     aiHint: 'fresh perfume citrus',
     description: 'A vibrant and refreshing spritz of Sicilian lemon, mandarin, and neroli. Captures the joy of a summer morning.',
     price: 'Rp 750.000',
