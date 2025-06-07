@@ -2,7 +2,7 @@
 'use client';
 
 import { perfumes } from '@/data/perfumes';
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle } from 'lucide-react'; // Menggunakan ikon yang lebih sesuai
 import { useRef, useState, useEffect } from 'react';
 
 const FeaturedProducts = () => {
@@ -19,7 +19,7 @@ const FeaturedProducts = () => {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, []); // Empty dependency array, so this only runs on unmount for the timeoutRef
+  }, []);
 
   const handleMouseEnter = (item: typeof featuredItems[0], index: number) => {
     if (item.videoSrc && !videoErrorIds.has(item.id)) {
@@ -31,13 +31,14 @@ const FeaturedProducts = () => {
 
         if (playPromise !== undefined) {
           playPromise.catch(error => {
-            if (error.name === 'AbortError') {
+            const typedError = error as Error; // Cast to Error to access 'name'
+            if (typedError.name === 'AbortError') {
               // Playback was interrupted by pause(). This is expected with hover effects.
               // console.log('Video playback interrupted as expected for item:', item.id);
             } else {
               // For other errors (e.g., video format not supported, network error),
-              // log it and treat it as a video load failure.
-              console.error("Error attempting to play video:", item.name, error);
+              // log it as a warning and treat it as a video load failure.
+              console.warn(`Warning: Problem playing video "${item.name}" (Reason: ${typedError.name} - ${typedError.message}). Falling back to image.`);
               handleVideoError(item.id, index);
             }
           });
@@ -65,7 +66,6 @@ const FeaturedProducts = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    // Only set hovered to null if this item was the one being hovered
     setHoveredVideoId(prev => (prev === item.id ? null : prev));
     
     const videoElement = videoRefs.current[index];
@@ -76,16 +76,14 @@ const FeaturedProducts = () => {
 
   const handleVideoError = (itemId: string, index: number) => {
     setVideoErrorIds(prev => new Set(prev).add(itemId));
-    // Pastikan video dihentikan dan state hover direset jika ada error saat hover
     const videoElement = videoRefs.current[index];
     if (videoElement) {
-        videoElement.pause();
+        videoElement.pause(); // Ensure video is paused
     }
-    if (timeoutRef.current) {
+    if (timeoutRef.current && hoveredVideoId === itemId) { // Clear timeout if it was for this video
         clearTimeout(timeoutRef.current);
     }
-    // Only set hovered to null if this item was the one being hovered
-    setHoveredVideoId(prev => (prev === itemId ? null : prev));
+    setHoveredVideoId(prev => (prev === itemId ? null : prev)); // Reset hover state if this item errored
   };
 
   return (
@@ -117,8 +115,8 @@ const FeaturedProducts = () => {
                       playsInline // Penting untuk autoplay di beberapa browser mobile
                       preload="metadata"
                       className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
-                      onError={() => handleVideoError(item.id, index)}
-                      id={`video-${item.id}`} // Optional: for easier debugging or more specific targeting if needed
+                      onError={() => handleVideoError(item.id, index)} // Fallback if video source itself is bad
+                      id={`video-${item.id}`}
                     />
                   ) : (
                     <img
@@ -128,6 +126,7 @@ const FeaturedProducts = () => {
                       className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                     />
                   )}
+                  {/* Overlay logic: Show if video is not playing or if it's an image fallback */}
                   {(!showVideo || (showVideo && hoveredVideoId !== item.id)) && (
                      <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <PlayCircle size={48} className="text-white/80 mb-2 sm:size={64}" />
