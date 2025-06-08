@@ -1,4 +1,4 @@
-
+// src/components/Navbar.tsx
 'use client';
 
 import Link from 'next/link';
@@ -7,12 +7,13 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 
 const navItems = [
   { label: 'Home', href: '/' },
-  { label: 'Video Galeri', href: '/#featured-videos' }, // Diubah dari Featured ke Video Galeri
+  { label: 'Video Galeri', href: '/video-gallery' },
   { label: 'Collection', href: '/#perfume-catalog' },
-  // { label: 'Contact', href: '/#contact' }, // Example if a contact section is added
+  // { label: 'Contact', href: '/#contact' }, 
 ];
 
 const Navbar = () => {
@@ -23,7 +24,6 @@ const Navbar = () => {
     setIsClient(true);
   }, []);
 
-
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('/#')) {
       e.preventDefault();
@@ -32,9 +32,9 @@ const Navbar = () => {
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: 'smooth' });
       }
-      setIsMobileMenuOpen(false); // Close mobile menu on link click
+      setIsMobileMenuOpen(false); 
     } else {
-      setIsMobileMenuOpen(false); // Close mobile menu for normal links too
+      setIsMobileMenuOpen(false); 
     }
   };
 
@@ -55,44 +55,52 @@ const Navbar = () => {
             </Link>
           ))}
         </nav>
-        <div className="md:hidden">
-          {isClient && ( // Only render Sheet on client to avoid hydration mismatch for isMobileMenuOpen
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-full max-w-xs bg-background p-6">
-                <div className="flex flex-col space-y-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <Logo />
-                    <SheetClose asChild>
-                       <Button variant="ghost" size="icon">
-                          <X className="h-6 w-6" />
-                          <span className="sr-only">Close menu</span>
-                        </Button>
-                    </SheetClose>
-                  </div>
-                  <nav className="flex flex-col space-y-2">
-                    {navItems.map((item) => (
-                      <SheetClose key={item.label} asChild>
-                        <Link
-                          href={item.href}
-                          onClick={(e) => handleLinkClick(e, item.href)}
-                          className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block"
-                        >
-                          {item.label}
-                           <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
-                        </Link>
+        <div className="flex items-center gap-2">
+          <div className="hidden md:block">
+            {isClient && <ThemeSwitcher />}
+          </div>
+          <div className="md:hidden">
+            {isClient && ( 
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-full max-w-xs bg-background p-6">
+                  <div className="flex flex-col space-y-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <Logo />
+                      <SheetClose asChild>
+                         <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
+                            <X className="h-6 w-6" />
+                            <span className="sr-only">Close menu</span>
+                          </Button>
                       </SheetClose>
-                    ))}
-                  </nav>
-                </div>
-              </SheetContent>
-            </Sheet>
-          )}
+                    </div>
+                    <nav className="flex flex-col space-y-2">
+                      {navItems.map((item) => (
+                        <SheetClose key={item.label} asChild>
+                          <Link
+                            href={item.href}
+                            onClick={(e) => handleLinkClick(e, item.href)}
+                            className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block"
+                          >
+                            {item.label}
+                             <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+                          </Link>
+                        </SheetClose>
+                      ))}
+                    </nav>
+                    <div className="mt-auto pt-6 border-t border-border/30">
+                      <ThemeSwitcher />
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
+          </div>
         </div>
       </div>
     </header>
