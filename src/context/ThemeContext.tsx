@@ -36,30 +36,38 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         initialTheme = 'blue-water'; // Default theme
       }
       setThemeState(initialTheme);
+      // console.log(`ThemeProvider: Initializing theme. Stored: ${storedTheme}, PrefersDark: ${prefersDark}, Resolved: ${initialTheme}`);
     }
   }, [hasMounted]);
 
   useEffect(() => {
     if (themeState && hasMounted) {
       const root = window.document.documentElement;
-      root.classList.remove('dark', 'theme-blue-water'); // Remove all theme classes
+      // console.log(`ThemeProvider: Attempting to apply theme "${themeState}" to DOM. Current <html> classes: ${root.className}`);
+      root.classList.remove('dark', 'theme-blue-water');
+      // console.log(`ThemeProvider: <html> classes after removal step: ${root.className}`);
 
       if (themeState === 'dark') {
         root.classList.add('dark');
+        // console.log(`ThemeProvider: Added "dark" class to <html>.`);
       } else if (themeState === 'blue-water') {
         root.classList.add('theme-blue-water');
+        // console.log(`ThemeProvider: Added "theme-blue-water" class to <html>.`);
       }
       // 'gold' theme is applied by :root styles when no other theme class is present
       localStorage.setItem('theme', themeState);
+      // console.log(`ThemeProvider: Final <html> classes: ${root.className}. Theme "${themeState}" saved to localStorage.`);
+    } else if (!themeState && hasMounted) {
+      // console.log("ThemeProvider: Theme is null, skipping DOM update.");
     }
   }, [themeState, hasMounted]);
 
   const handleSetTheme = useCallback((newTheme: Theme) => {
+    // console.log(`ThemeProvider: User explicitly set theme to "${newTheme}".`);
     setThemeState(newTheme);
   }, []);
 
-  // Provide a default theme if themeState is null during initialization
-  const currentContextTheme = themeState ?? 'blue-water';
+  const currentContextTheme = themeState ?? (hasMounted ? 'blue-water' : 'blue-water'); // Default to blue-water if still null post-mount
 
   return (
     <ThemeContext.Provider value={{ theme: currentContextTheme, setTheme: handleSetTheme, hasMounted }}>

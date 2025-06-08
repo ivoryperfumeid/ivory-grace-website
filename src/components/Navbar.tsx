@@ -1,3 +1,4 @@
+
 // src/components/Navbar.tsx
 'use client';
 
@@ -7,7 +8,7 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
-import ThemeSwitcher from '@/components/ThemeSwitcher';
+import ThemeSwitcher from '@/components/ThemeSwitcher'; // Ensure this path is correct
 
 const navItems = [
   { label: 'Home', href: '/' },

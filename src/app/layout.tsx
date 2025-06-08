@@ -1,7 +1,8 @@
 
 import type { Metadata } from 'next';
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster"; // Added Toaster for potential notifications
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from '@/context/ThemeContext'; // Import ThemeProvider
 
 export const metadata: Metadata = {
   title: 'Ivory & Grace Perfumes | Scented Elegance',
@@ -15,16 +16,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning> {/* suppressHydrationWarning for theme changes */}
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased" suppressHydrationWarning={true}>
-        {children}
-        <Toaster />
+      <body className="font-body antialiased"> {/* Removed suppressHydrationWarning from body */}
+        <ThemeProvider> {/* Wrap children with ThemeProvider */}
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
