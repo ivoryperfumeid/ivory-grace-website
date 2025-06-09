@@ -16,7 +16,9 @@ export default function HomePage() {
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
 
   useEffect(() => {
-    // Show survey dialog only if it hasn't been dismissed or completed in this session/browser
+    // TEMPORARY: Always show survey for testing.
+    // The original logic below checks localStorage to show the dialog only once.
+    /*
     const dismissed = localStorage.getItem('surveyDialogDismissed');
     const completed = localStorage.getItem('surveyDialogCompleted');
     if (!dismissed && !completed) {
@@ -26,6 +28,14 @@ export default function HomePage() {
       }, 1500); // 1.5 second delay
       return () => clearTimeout(timer);
     }
+    */
+
+    // Temporary logic to always show the dialog after a delay:
+    const timer = setTimeout(() => {
+      setIsSurveyOpen(true);
+    }, 1500); // 1.5 second delay
+    return () => clearTimeout(timer);
+    
   }, []);
 
   return (
@@ -44,5 +54,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    
