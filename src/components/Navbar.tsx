@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Menu, X, Database } from 'lucide-react'; // Removed Search icon
+import { Menu, X, Search } from 'lucide-react'; // Changed Database to Search
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
@@ -11,7 +11,8 @@ import ThemeSwitcher from '@/components/ThemeSwitcher';
 import {
   Dialog,
   DialogContent,
-  DialogTrigger, // Ensure DialogTrigger is imported if used for Modul
+  DialogTrigger,
+  DialogClose, // Ensure DialogClose is imported
 } from '@/components/ui/dialog';
 import { ModulPencarianDialogContent } from './ModulPencarianDialogContent';
 
@@ -25,7 +26,7 @@ const navItems = [
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const [isModulModalOpen, setIsModulModalOpen] = useState(false);
+  const [isModulModalOpen, setIsModulModalOpen] = useState(false); // Renamed from isSearchModalOpen to isModulModalOpen for clarity if needed, or keep as is if Modul IS the search
 
   useEffect(() => {
     setIsClient(true);
@@ -62,13 +63,14 @@ const Navbar = () => {
                 <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
               </Link>
             ))}
-            {/* Desktop Modul Trigger */}
+            {/* Desktop "Cari Parfum" (formerly Modul) Trigger */}
             <Dialog open={isModulModalOpen} onOpenChange={setIsModulModalOpen}>
               <DialogTrigger asChild>
                 <button
                   className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-accent transition-colors group flex items-center"
+                  aria-label="Buka pencarian parfum"
                 >
-                  <Database className="mr-2 h-4 w-4" /> Modul
+                  <Search className="mr-2 h-4 w-4" /> Cari Parfum
                   <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
                 </button>
               </DialogTrigger>
@@ -85,9 +87,8 @@ const Navbar = () => {
               {isClient && (
                 <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                   <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" aria-label="Buka menu">
                       <Menu className="h-6 w-6" />
-                      <span className="sr-only">Open menu</span>
                     </Button>
                   </SheetTrigger>
                   <SheetContent side="right" className="w-full max-w-xs bg-background p-6">
@@ -95,9 +96,8 @@ const Navbar = () => {
                       <div className="flex justify-between items-center mb-4">
                         <Logo />
                         <SheetClose asChild>
-                          <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
+                          <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} aria-label="Tutup menu">
                             <X className="h-6 w-6" />
-                            <span className="sr-only">Close menu</span>
                           </Button>
                         </SheetClose>
                       </div>
@@ -114,7 +114,7 @@ const Navbar = () => {
                             </Link>
                           </SheetClose>
                         ))}
-                        {/* Mobile Modul Trigger */}
+                        {/* Mobile "Cari Parfum" (formerly Modul) Trigger */}
                         <SheetClose asChild>
                           <button
                             onClick={() => {
@@ -122,8 +122,9 @@ const Navbar = () => {
                               setIsMobileMenuOpen(false);
                             }}
                             className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block w-full text-left flex items-center"
+                            aria-label="Buka pencarian parfum"
                           >
-                            <Database className="mr-2 h-4 w-4" /> Modul
+                            <Search className="mr-2 h-5 w-5" /> Cari Parfum
                             <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
                           </button>
                         </SheetClose>
@@ -139,9 +140,6 @@ const Navbar = () => {
           </div>
         </div>
       </header>
-
-      {/* Modul Dialog Content (controlled by isModulModalOpen) is now part of the Dialog component in the desktop nav, and triggered by state change in mobile */}
-      {/* The Dialog for Modul is defined above for desktop and triggered differently for mobile */}
     </>
   );
 };
