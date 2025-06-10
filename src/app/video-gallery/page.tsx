@@ -6,56 +6,38 @@ import Footer from '@/components/Footer';
 import { perfumes } from '@/data/perfumes';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollToTopButton } from '@/components/ScrollToTopButton';
-import Image from 'next/image'; // Import Image component
-import { useState } from 'react'; // Import useState
+import Image from 'next/image';
+import { useState } from 'react';
 
 interface PerfumeVideo {
   id: string;
   name: string;
-  imageSrc: string;
-  videoSrc?: string;
+  imageSrc: string; // URL untuk thumbnail
+  videoSrc?: string; // SEKARANG: ID Video YouTube
   aiHint?: string;
 }
 
-// Helper function to transform Vimeo URL for gallery display
-const getGalleryVimeoUrl = (originalSrc: string): string => {
-  if (!originalSrc.includes('vimeo.com')) {
-    return originalSrc;
-  }
-  // Basic transformation: ensure controls are enabled, disable autoplay for gallery view initially.
-  // Remove background, loop, muted, title, byline, portrait for a standard player.
-  let url = originalSrc;
-  url = url.replace(/&autoplay=1/g, '&autoplay=0');
-  url = url.replace(/&controls=0/g, '&controls=1');
-  url = url.replace(/&muted=1/g, '&muted=0'); // Typically, videos in a gallery page shouldn't autoplay sound
-  url = url.replace(/&background=1/g, '');
-  url = url.replace(/&loop=1/g, '&loop=0');
-  url = url.replace(/&title=0/g, '&title=1');
-  url = url.replace(/&byline=0/g, '&byline=1');
-  url = url.replace(/&portrait=0/g, '&portrait=1');
-  url = url.replace(/&transparent=0/g, ''); // Ensure player is not transparent
+const getYouTubeEmbedUrl = (videoId: string, autoplay = false, controls = true) => {
+  let url = `https://www.youtube.com/embed/${videoId}`;
+  const params = new URLSearchParams();
+  if (autoplay) params.append('autoplay', '1');
+  if (controls) params.append('controls', '1');
+  // Anda bisa menambahkan parameter lain jika perlu, misal: rel=0, modestbranding=1
+  params.append('rel', '0'); 
+  params.append('modestbranding', '1');
 
-  // Add controls=1 if not present
-  if (!url.includes('controls=')) {
-    url += '&controls=1';
-  }
-  // Add title=1, byline=1, portrait=1 if not present for better Vimeo player experience
-  if (!url.includes('title=')) {
-    url += '&title=1';
-  }
-  if (!url.includes('byline=')) {
-    url += '&byline=1';
-  }
-  if (!url.includes('portrait=')) {
-    url += '&portrait=1';
+  const paramString = params.toString();
+  if (paramString) {
+    url += `?${paramString}`;
   }
   return url;
 };
 
 
 export default function VideoGalleryPage() {
+  // Filter parfum yang memiliki videoSrc (ID video YouTube)
   const videos: PerfumeVideo[] = perfumes.filter(perfume => perfume.videoSrc);
-  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null); // Menyimpan ID parfum yang videonya sedang diputar
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -73,17 +55,18 @@ export default function VideoGalleryPage() {
                     <div className="aspect-video relative w-full overflow-hidden rounded-t-lg">
                       {playingVideoId === video.id && video.videoSrc ? (
                         <iframe
-                          src={getGalleryVimeoUrl(video.videoSrc).replace('&autoplay=0', '&autoplay=1')} // Add autoplay when playing
+                          src={getYouTubeEmbedUrl(video.videoSrc, true, true)} // Autoplay, controls
                           title={`Video player for ${video.name}`}
                           frameBorder="0"
-                          allow="autoplay; fullscreen; picture-in-picture"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
                           className="absolute top-0 left-0 w-full h-full"
                         ></iframe>
                       ) : (
                         <>
+                          {/* Idealnya, imageSrc adalah thumbnail dari video YouTube atau gambar yang relevan */}
                           <Image
-                            src={video.imageSrc}
+                            src={video.imageSrc} 
                             alt={`Thumbnail for ${video.name}`}
                             data-ai-hint={video.aiHint || "product video thumbnail"}
                             layout="fill"

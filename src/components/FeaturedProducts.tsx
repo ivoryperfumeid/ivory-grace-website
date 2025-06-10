@@ -9,58 +9,52 @@ import { CirclePlay, Film } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 const FeaturedProducts = () => {
-  const featuredItems = perfumes.filter(p => p.isFeatured).slice(0, 4);
-  const [currentIframeSrcs, setCurrentIframeSrcs] = useState<Record<string, string | undefined>>({});
-  const [currentlyHoveredItemId, setCurrentlyHoveredItemId] = useState<string | null>(null);
+  const featuredItems = perfumes.filter(p => p.isFeatured && p.videoSrc).slice(0, 4);
+  const [currentPlayingVideoId, setCurrentPlayingVideoId] = useState<string | null>(null);
   const previewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const initialSrcs: Record<string, string | undefined> = {};
-    featuredItems.forEach(item => {
-      initialSrcs[item.id] = item.videoSrc;
-    });
-    setCurrentIframeSrcs(initialSrcs);
-  }, []);
-
-  const getRestingSrc = (itemId: string): string | undefined => {
-    return perfumes.find(p => p.id === itemId)?.videoSrc;
-  };
-
-  const handleMouseEnter = (itemId: string) => {
-    setCurrentlyHoveredItemId(itemId);
-    const restingSrc = getRestingSrc(itemId);
-
-    if (restingSrc && restingSrc.includes('vimeo.com')) {
-      const autoplayUrl = restingSrc.replace('&autoplay=0', '&autoplay=1');
-      
-      setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: autoplayUrl }));
-
-      if (previewTimeoutRef.current) {
-        clearTimeout(previewTimeoutRef.current);
-      }
-
-      previewTimeoutRef.current = setTimeout(() => {
-        if (currentlyHoveredItemId === itemId) { 
-          setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: restingSrc }));
-        }
-      }, 5000); 
+  const getYouTubeEmbedUrl = (videoId: string, autoplay = false, loop = false, controls = false, mute = false) => {
+    let url = `https://www.youtube.com/embed/${videoId}`;
+    const params = new URLSearchParams();
+    if (autoplay) params.append('autoplay', '1');
+    if (mute) params.append('mute', '1'); // mute harus 1 agar autoplay bekerja di banyak browser
+    if (loop) {
+      params.append('loop', '1');
+      params.append('playlist', videoId); // loop memerlukan playlist dengan videoId yang sama
     }
+    if (!controls) params.append('controls', '0');
+    params.append('modestbranding', '1'); // Mengurangi logo YouTube
+    // params.append('showinfo', '0'); // Deprecated tapi kadang masih berguna
+    params.append('rel', '0'); // Tidak menampilkan video terkait dari channel lain
+
+    const paramString = params.toString();
+    if (paramString) {
+      url += `?${paramString}`;
+    }
+    return url;
   };
 
-  const handleMouseLeave = (itemId: string) => {
+  const handleMouseEnter = (itemId: string, videoId: string | undefined) => {
+    if (!videoId) return;
+
+    if (previewTimeoutRef.current) {
+      clearTimeout(previewTimeoutRef.current);
+    }
+    setCurrentPlayingVideoId(itemId); // Set video yang sedang diputar untuk di-iframe
+
+    // Otomatis kembali ke thumbnail setelah 5 detik
+    previewTimeoutRef.current = setTimeout(() => {
+      setCurrentPlayingVideoId(null);
+    }, 7000); // Durasi pratinjau video
+  };
+
+  const handleMouseLeave = () => {
     if (previewTimeoutRef.current) {
       clearTimeout(previewTimeoutRef.current);
       previewTimeoutRef.current = null;
     }
-
-    const restingSrc = getRestingSrc(itemId);
-    if (restingSrc && restingSrc.includes('vimeo.com')) {
-      setCurrentIframeSrcs(prevSrcs => ({ ...prevSrcs, [itemId]: restingSrc.replace('&autoplay=1', '&autoplay=0') }));
-    }
-
-    if (currentlyHoveredItemId === itemId) {
-      setCurrentlyHoveredItemId(null);
-    }
+    // Tidak langsung menghentikan video di sini, biarkan timeout yang menghandel
+    // atau jika ingin stop langsung: setCurrentPlayingVideoId(null);
   };
 
   return (
@@ -75,40 +69,40 @@ const FeaturedProducts = () => {
               <div
                 key={item.id}
                 className="group w-full overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 bg-card flex flex-col"
-                onMouseEnter={() => item.videoSrc && item.videoSrc.includes('vimeo.com') && handleMouseEnter(item.id)}
-                onMouseLeave={() => item.videoSrc && item.videoSrc.includes('vimeo.com') && handleMouseLeave(item.id)}
+                onMouseEnter={() => handleMouseEnter(item.id, item.videoSrc)}
+                onMouseLeave={handleMouseLeave}
               >
-                {currentIframeSrcs[item.id] && currentIframeSrcs[item.id]?.includes('vimeo.com') ? (
-                  <div className="relative aspect-[9/16] w-full">
+                <div className="relative aspect-[9/16] w-full">
+                  {currentPlayingVideoId === item.id && item.videoSrc ? (
                     <iframe
-                      key={currentIframeSrcs[item.id]}
+                      key={item.id + '-player'} // Key unik untuk re-render iframe
                       className="absolute top-0 left-0 w-full h-full rounded-t-lg border-2 border-transparent group-hover:border-primary/50 transition-colors"
-                      src={currentIframeSrcs[item.id]}
-                      title={`Video player for ${item.name}`}
+                      src={getYouTubeEmbedUrl(item.videoSrc, true, true, false, true)} // autoplay, loop, no controls, mute
+                      title={`Pratinjau video untuk ${item.name}`}
                       frameBorder="0"
-                      allow="autoplay; fullscreen; picture-in-picture"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                       loading="lazy"
                     ></iframe>
-                  </div>
-                ) : (
-                  <div className="aspect-[9/16] relative w-full">
-                    <Image
-                      src={item.imageSrc}
-                      alt={`Thumbnail untuk ${item.name}`}
-                      data-ai-hint={item.aiHint || "product image"}
-                      fill
-                      sizes="(max-width: 639px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
-                      style={{ objectFit: 'cover' }}
-                      className="rounded-t-lg"
-                      priority={index < 2} 
-                    />
-                    <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-lg">
-                      <CirclePlay size={48} className="text-white/80 mb-2" />
-                      <h3 className="text-sm sm:text-md font-semibold text-white text-center p-2">{item.name}</h3>
-                    </div>
-                  </div>
-                )}
+                  ) : (
+                    <>
+                      <Image
+                        src={item.imageSrc} // Idealnya, ini adalah thumbnail dari video YouTube atau gambar terkait
+                        alt={`Thumbnail untuk ${item.name}`}
+                        data-ai-hint={item.aiHint || "product video thumbnail"}
+                        fill
+                        sizes="(max-width: 639px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                        style={{ objectFit: 'cover' }}
+                        className="rounded-t-lg transition-transform duration-300 group-hover:scale-105"
+                        priority={index < 2}
+                      />
+                      <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-lg cursor-pointer">
+                        <CirclePlay size={48} className="text-white/80 mb-2" />
+                        <h3 className="text-sm sm:text-md font-semibold text-white text-center p-2">{item.name}</h3>
+                      </div>
+                    </>
+                  )}
+                </div>
                 <div className="p-3 sm:p-4 mt-auto bg-card rounded-b-lg">
                   <h3 className="text-sm sm:text-md font-semibold text-foreground font-body truncate">{item.name}</h3>
                 </div>

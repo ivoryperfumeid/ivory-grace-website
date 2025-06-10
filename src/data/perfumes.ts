@@ -1,24 +1,19 @@
 
 import type { Perfume } from '@/types';
 
-// URL embed Vimeo dasar - video ID dan hashnya
-const vimeoVideoId = "1091205091";
-const vimeoVideoHash = "e1259b256b";
-const vimeoEmbedBaseUrl = `https://player.vimeo.com/video/${vimeoVideoId}?h=${vimeoVideoHash}`;
-
-// URL embed Vimeo dengan parameter untuk menyembunyikan judul, byline, potret, kontrol, dan mengatur background mode
-// autoplay=0&loop=0&muted=1 ensures it's ready for hover interaction
-const vimeoEmbedUrlWithParams = `${vimeoEmbedBaseUrl}&autoplay=0&muted=1&controls=0&loop=0&background=1&transparent=0&title=0&byline=0&portrait=0`;
-
-// Contoh URL video placeholder non-Vimeo.
-const placeholderVideo = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+// Contoh ID Video YouTube untuk placeholder
+const youtubeVideoId1 = "L_LUpnjgPso"; // Nature scene
+const youtubeVideoId2 = "LXb3EKWsInQ"; // Short cinematic
+const youtubeVideoId3 = "3JZ_D3ELwOQ"; // Abstract animation
+const youtubeVideoId4 = "QH2-TGUlwu4"; // Another nature
+const youtubeVideoId5 = "rokGy0huYEA"; // Product style video
 
 export const perfumes: Perfume[] = [
   {
     id: '1',
     name: 'Luminous Bloom Eau de Parfum',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: vimeoEmbedUrlWithParams, // Menggunakan URL dengan semua parameter
+    videoSrc: youtubeVideoId1, // ID Video YouTube
     aiHint: 'perfume bottle floral',
     description: 'A radiant floral fragrance with notes of jasmine, tuberose, and sandalwood. Captures the essence of a garden in full bloom.',
     price: 'Rp 1.250.000',
@@ -28,7 +23,7 @@ export const perfumes: Perfume[] = [
     id: '2',
     name: 'Velvet Oud Extrait de Parfum',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: vimeoEmbedUrlWithParams, // Menggunakan URL dengan semua parameter
+    videoSrc: youtubeVideoId2, // ID Video YouTube
     aiHint: 'luxury perfume dark',
     description: 'A rich and mysterious blend of precious oud, velvety rose, and warm amber. An unforgettable and opulent experience.',
     price: 'Rp 2.800.000',
@@ -38,7 +33,7 @@ export const perfumes: Perfume[] = [
     id: '3',
     name: 'Graceful Whisper Eau de Toilette',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: vimeoEmbedUrlWithParams, // Menggunakan URL dengan semua parameter
+    videoSrc: youtubeVideoId3, // ID Video YouTube
     aiHint: 'elegant perfume light',
     description: 'A delicate and sophisticated scent featuring notes of white tea, bergamot, and soft musk. Perfect for everyday elegance.',
     price: 'Rp 950.000',
@@ -48,7 +43,7 @@ export const perfumes: Perfume[] = [
     id: '4',
     name: 'Ivory Elixir Pure Perfume',
     imageSrc: 'https://placehold.co/400x600.png',
-    // videoSrc: placeholderVideo, // Contoh tanpa video atau video non-Vimeo
+    // videoSrc: undefined, // Tidak ada video untuk produk ini
     aiHint: 'classic perfume gold',
     description: 'The signature scent of Ivory & Grace. A timeless composition of rare iris, creamy vanilla, and a hint of spice.',
     price: 'Rp 3.500.000',
@@ -57,17 +52,17 @@ export const perfumes: Perfume[] = [
     id: '5',
     name: 'Midnight Charm Eau de Parfum',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: placeholderVideo, // Ini bukan URL Vimeo, jadi tidak akan terpengaruh parameter Vimeo
+    videoSrc: youtubeVideoId5, // ID Video YouTube
     aiHint: 'perfume bottle night',
     description: 'An alluring and seductive fragrance with notes of black orchid, patchouli, and dark chocolate. For moments of intrigue.',
     price: 'Rp 1.500.000',
-    // isFeatured: true, // Jika ini true dan videoSrc-nya adalah Vimeo, perlu diupdate juga
+    isFeatured: true, // Dijadikan featured agar muncul di FeaturedProducts
   },
   {
     id: '6',
     name: 'Sun-kissed Citrus Eau Fraiche',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: vimeoEmbedUrlWithParams, // Menggunakan URL dengan semua parameter
+    videoSrc: youtubeVideoId4, // ID Video YouTube
     aiHint: 'fresh perfume citrus',
     description: 'A vibrant and refreshing spritz of Sicilian lemon, mandarin, and neroli. Captures the joy of a summer morning.',
     price: 'Rp 750.000',
@@ -77,7 +72,7 @@ export const perfumes: Perfume[] = [
     id: '7',
     name: 'Enchanted Forest Parfum',
     imageSrc: 'https://placehold.co/400x600.png',
-    // videoSrc: placeholderVideo,
+    // videoSrc: undefined,
     aiHint: 'perfume bottle green',
     description: 'A mystical journey through woody notes of cedarwood, vetiver, and a touch of incense. Grounding and serene.',
     price: 'Rp 2.100.000',
@@ -86,7 +81,7 @@ export const perfumes: Perfume[] = [
     id: '8',
     name: 'Royal Amber Absolute',
     imageSrc: 'https://placehold.co/400x600.png',
-    // videoSrc: placeholderVideo,
+    // videoSrc: undefined,
     aiHint: 'perfume bottle amber',
     description: 'A majestic and warm fragrance centered around rich amber, complemented by vanilla and spices. Regal and comforting.',
     price: 'Rp 2.500.000',
