@@ -1,25 +1,36 @@
-
 // src/components/Navbar.tsx
 'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Search, Database } from 'lucide-react'; // Added Search and Database icons
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
-import ThemeSwitcher from '@/components/ThemeSwitcher'; // Ensure this path is correct
+import ThemeSwitcher from '@/components/ThemeSwitcher';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose, // Ensure DialogClose is imported
+} from '@/components/ui/dialog';
+import { ModulPencarianDialogContent } from './ModulPencarianDialogContent'; // Import the new component
 
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Video Galeri', href: '/video-gallery' },
   { label: 'Collection', href: '/#perfume-catalog' },
-  // { label: 'Contact', href: '/#contact' }, 
+  // { label: 'Contact', href: '/#contact' },
 ];
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isModulModalOpen, setIsModulModalOpen] = useState(false); // State for the new Modul modal
 
   useEffect(() => {
     setIsClient(true);
@@ -33,78 +44,151 @@ const Navbar = () => {
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: 'smooth' });
       }
-      setIsMobileMenuOpen(false); 
+      setIsMobileMenuOpen(false);
     } else {
-      setIsMobileMenuOpen(false); 
+      setIsMobileMenuOpen(false);
     }
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Logo />
-        <nav className="hidden md:flex items-center space-x-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={(e) => handleLinkClick(e, item.href)}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-accent transition-colors group"
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Logo />
+          <nav className="hidden md:flex items-center space-x-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                onClick={(e) => handleLinkClick(e, item.href)}
+                className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-accent transition-colors group"
+              >
+                {item.label}
+                <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+              </Link>
+            ))}
+            {/* Desktop Search Perfume Trigger */}
+            <button
+              onClick={() => setIsSearchModalOpen(true)}
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-accent transition-colors group flex items-center"
             >
-              {item.label}
+              <Search className="mr-2 h-4 w-4" /> Cari Parfum
               <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
-            </Link>
-          ))}
-        </nav>
-        <div className="flex items-center gap-2">
-          <div className="hidden md:block">
-            {isClient && <ThemeSwitcher />}
-          </div>
-          <div className="md:hidden">
-            {isClient && ( 
-              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-full max-w-xs bg-background p-6">
-                  <div className="flex flex-col space-y-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <Logo />
-                      <SheetClose asChild>
-                         <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
+            </button>
+            {/* Desktop Modul Trigger */}
+            <button
+              onClick={() => setIsModulModalOpen(true)}
+              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-accent transition-colors group flex items-center"
+            >
+              <Database className="mr-2 h-4 w-4" /> Modul
+              <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            </button>
+          </nav>
+          <div className="flex items-center gap-2">
+            <div className="hidden md:block">
+              {isClient && <ThemeSwitcher />}
+            </div>
+            <div className="md:hidden">
+              {isClient && (
+                <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Menu className="h-6 w-6" />
+                      <span className="sr-only">Open menu</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-full max-w-xs bg-background p-6">
+                    <div className="flex flex-col space-y-6">
+                      <div className="flex justify-between items-center mb-4">
+                        <Logo />
+                        <SheetClose asChild>
+                          <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
                             <X className="h-6 w-6" />
                             <span className="sr-only">Close menu</span>
                           </Button>
-                      </SheetClose>
-                    </div>
-                    <nav className="flex flex-col space-y-2">
-                      {navItems.map((item) => (
-                        <SheetClose key={item.label} asChild>
-                          <Link
-                            href={item.href}
-                            onClick={(e) => handleLinkClick(e, item.href)}
-                            className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block"
-                          >
-                            {item.label}
-                             <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
-                          </Link>
                         </SheetClose>
-                      ))}
-                    </nav>
-                    <div className="mt-auto pt-6 border-t border-border/30">
-                      <ThemeSwitcher />
+                      </div>
+                      <nav className="flex flex-col space-y-2">
+                        {navItems.map((item) => (
+                          <SheetClose key={item.label} asChild>
+                            <Link
+                              href={item.href}
+                              onClick={(e) => handleLinkClick(e, item.href)}
+                              className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block"
+                            >
+                              {item.label}
+                              <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+                            </Link>
+                          </SheetClose>
+                        ))}
+                        {/* Mobile Search Perfume Trigger */}
+                        <SheetClose asChild>
+                          <button
+                            onClick={() => {
+                              setIsSearchModalOpen(true);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block w-full text-left flex items-center"
+                          >
+                            <Search className="mr-2 h-4 w-4" /> Cari Parfum
+                            <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+                          </button>
+                        </SheetClose>
+                        {/* Mobile Modul Trigger */}
+                        <SheetClose asChild>
+                          <button
+                            onClick={() => {
+                              setIsModulModalOpen(true);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block w-full text-left flex items-center"
+                          >
+                            <Database className="mr-2 h-4 w-4" /> Modul
+                            <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+                          </button>
+                        </SheetClose>
+                      </nav>
+                      <div className="mt-auto pt-6 border-t border-border/30">
+                        <ThemeSwitcher />
+                      </div>
                     </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
-            )}
+                  </SheetContent>
+                </Sheet>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Search Perfume Dialog */}
+      <Dialog open={isSearchModalOpen} onOpenChange={setIsSearchModalOpen}>
+        <DialogContent className="sm:max-w-md bg-card text-card-foreground">
+          <DialogHeader>
+            <DialogTitle>Pencarian Parfum</DialogTitle>
+            <DialogDescription>
+              Lanjut ntuk mengembangkan ini
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2">
+            <p className="text-xs text-muted-foreground">Fitur pencarian akan segera hadir di sini.</p>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="outline">
+                Tutup
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>>
+
+      {/* Modul Dialog */}
+      <Dialog open={isModulModalOpen} onOpenChange={setIsModulModalOpen}>
+        <DialogContent className="sm:max-w-2xl bg-card text-card-foreground shadow-xl rounded-lg">
+          <ModulPencarianDialogContent />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
