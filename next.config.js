@@ -27,6 +27,9 @@ const nextConfig = {
     // Untuk dev server (Firebase Studio), unoptimized akan false, sehingga optimasi gambar aktif
     unoptimized: isGithubPages ? true : false,
   },
+  env: {
+    NEXT_PUBLIC_IS_GITHUB_PAGES: process.env.IS_GITHUB_PAGES,
+  }
 };
 
 module.exports = nextConfig;

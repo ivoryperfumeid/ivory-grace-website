@@ -10,33 +10,35 @@ import PerfumeCatalog from '@/components/PerfumeCatalog';
 import PriceCatalog from '@/components/PriceCatalog';
 import Footer from '@/components/Footer';
 import { ScrollToTopButton } from '@/components/ScrollToTopButton';
-import { SurveyDialog } from '@/components/SurveyDialog'; // Import SurveyDialog
+import { SurveyDialog } from '@/components/SurveyDialog'; 
 
 export default function HomePage() {
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
+  const isStaticExport = process.env.NEXT_PUBLIC_IS_GITHUB_PAGES === 'true';
 
   useEffect(() => {
-    // TEMPORARY: Always show survey for testing.
-    // The original logic below checks localStorage to show the dialog only once.
-    /*
-    const dismissed = localStorage.getItem('surveyDialogDismissed');
-    const completed = localStorage.getItem('surveyDialogCompleted');
-    if (!dismissed && !completed) {
-      // Optional: Add a small delay to let the page load a bit
-      const timer = setTimeout(() => {
+    if (isStaticExport) {
+      // Don't show survey dialog for GitHub Pages static export
+      return;
+    }
+    
+    // Original logic for non-static builds
+    // const dismissed = localStorage.getItem('surveyDialogDismissed');
+    // const completed = localStorage.getItem('surveyDialogCompleted');
+    // if (!dismissed && !completed) {
+    //   const timer = setTimeout(() => {
+    //     setIsSurveyOpen(true);
+    //   }, 1500); 
+    //   return () => clearTimeout(timer);
+    // }
+
+    // Temporary logic to always show the dialog after a delay (for non-static builds):
+     const timer = setTimeout(() => {
         setIsSurveyOpen(true);
       }, 1500); // 1.5 second delay
       return () => clearTimeout(timer);
-    }
-    */
 
-    // Temporary logic to always show the dialog after a delay:
-    const timer = setTimeout(() => {
-      setIsSurveyOpen(true);
-    }, 1500); // 1.5 second delay
-    return () => clearTimeout(timer);
-    
-  }, []);
+  }, [isStaticExport]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -50,7 +52,7 @@ export default function HomePage() {
       </main>
       <Footer />
       <ScrollToTopButton />
-      <SurveyDialog isOpen={isSurveyOpen} onOpenChange={setIsSurveyOpen} />
+      {!isStaticExport && <SurveyDialog isOpen={isSurveyOpen} onOpenChange={setIsSurveyOpen} />}
     </div>
   );
 }
