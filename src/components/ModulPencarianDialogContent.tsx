@@ -37,16 +37,12 @@ const fetchPerfumes = async (): Promise<Perfume[]> => {
       id: doc.id,
       name: data.name || 'Nama tidak tersedia',
       description: data.description || 'Deskripsi tidak tersedia',
-      // Sesuaikan field lain berdasarkan struktur data Anda di Firestore
-      // Misalnya, jika harga disimpan sebagai angka, Anda mungkin perlu memformatnya
-      price: typeof data.price === 'string' ? data.price : (typeof data.price === 'number' ? `Rp ${data.price.toLocaleString('id-ID')}` : 'Harga tidak tersedia'),
-      imageSrc: data.imageSrc || 'https://placehold.co/400x600.png', // Fallback jika tidak ada imageSrc
+      // Harga tidak lagi dipetakan atau digunakan untuk tampilan tabel ini
+      price: '', // Atau bisa juga dihapus sepenuhnya jika tidak digunakan di tempat lain
+      imageSrc: data.imageSrc || 'https://placehold.co/400x600.png', 
       videoSrc: data.videoSrc,
       isFeatured: data.isFeatured || false,
       aiHint: data.aiHint,
-      // Tambahkan field lain dari Firestore jika perlu, contoh:
-      // category: data.category,
-      // notes: data.notes,
     };
   });
   return perfumesList;
@@ -103,12 +99,11 @@ export function ModulPencarianDialogContent() {
         {!isLoading && !error && filteredPerfumes.length > 0 && (
           <div className="max-h-[50vh] overflow-y-auto pr-2 rounded-md border border-border/30">
             <Table>
-              <TableCaption className="py-4">Daftar parfum Ivory & Grace. Harga dan ketersediaan dapat berubah.</TableCaption>
+              <TableCaption className="py-4">Daftar parfum Ivory & Grace. Ketersediaan dapat berubah.</TableCaption>
               <TableHeader className="sticky top-0 bg-card z-10 shadow-sm">
                 <TableRow>
-                  <TableHead className="w-[200px] font-semibold">Nama Parfum</TableHead>
+                  <TableHead className="w-[250px] font-semibold">Nama Parfum</TableHead>
                   <TableHead className="font-semibold">Deskripsi Singkat</TableHead>
-                  <TableHead className="text-right w-[150px] font-semibold">Harga</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -116,7 +111,6 @@ export function ModulPencarianDialogContent() {
                   <TableRow key={perfume.id} className="hover:bg-muted/50 transition-colors">
                     <TableCell className="font-medium py-3">{perfume.name}</TableCell>
                     <TableCell className="text-sm text-foreground/80 py-3">{perfume.description}</TableCell>
-                    <TableCell className="text-right font-semibold text-accent py-3">{perfume.price}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -128,9 +122,7 @@ export function ModulPencarianDialogContent() {
             {searchTerm ? "Tidak ada parfum yang cocok dengan pencarian Anda." : "Tidak ada data parfum yang tersedia saat ini."}
           </p>
         )}
-        <p className="text-sm text-center text-muted-foreground mt-2">
-          (Langkah 3: Terintegrasi dengan Firestore Selesai)
-        </p>
+        {/* Teks Langkah 3 telah dihapus */}
       </div>
       <DialogFooter>
         <DialogClose asChild>
