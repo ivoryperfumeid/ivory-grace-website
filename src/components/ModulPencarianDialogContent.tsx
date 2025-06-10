@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/table';
 import { Loader2 } from 'lucide-react';
 import type { Perfume } from '@/types';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { collection, getDocs, query, type DocumentData } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -37,9 +37,8 @@ const fetchPerfumes = async (): Promise<Perfume[]> => {
       id: doc.id,
       name: data.name || 'Nama tidak tersedia',
       description: data.description || 'Deskripsi tidak tersedia',
-      // Harga tidak lagi dipetakan atau digunakan untuk tampilan tabel ini
-      price: '', // Atau bisa juga dihapus sepenuhnya jika tidak digunakan di tempat lain
-      imageSrc: data.imageSrc || 'https://placehold.co/400x600.png', 
+      price: data.price || '', // Harga akan tetap kosong jika tidak ada di Firestore
+      imageSrc: data.imageSrc || 'https://placehold.co/400x600.png',
       videoSrc: data.videoSrc,
       isFeatured: data.isFeatured || false,
       aiHint: data.aiHint,
@@ -55,6 +54,22 @@ export function ModulPencarianDialogContent() {
     queryKey: ['perfumes'],
     queryFn: fetchPerfumes,
   });
+
+  // For debugging on GitHub Pages
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) { // A more robust check for GH Pages
+      console.log('[ModulPencarianDialogContent] Environment: GitHub Pages');
+      console.log('[ModulPencarianDialogContent] isLoading:', isLoading);
+      console.log('[ModulPencarianDialogContent] error:', error);
+      console.log('[ModulPencarianDialogContent] perfumes data:', perfumes);
+      if (db) {
+        console.log('[ModulPencarianDialogContent] Firebase db object exists. Project ID from db config:', db.app.options.projectId);
+      } else {
+        console.log('[ModulPencarianDialogContent] Firebase db object does NOT exist.');
+      }
+    }
+  }, [isLoading, error, perfumes]);
+
 
   const filteredPerfumes = useMemo(() => {
     if (!perfumes) return [];
@@ -122,7 +137,6 @@ export function ModulPencarianDialogContent() {
             {searchTerm ? "Tidak ada parfum yang cocok dengan pencarian Anda." : "Tidak ada data parfum yang tersedia saat ini."}
           </p>
         )}
-        {/* Teks Langkah 3 telah dihapus */}
       </div>
       <DialogFooter>
         <DialogClose asChild>
