@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Menu, X, Search, Database } from 'lucide-react'; // Added Search and Database icons
+import { Menu, X, Database } from 'lucide-react'; // Removed Search icon
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
@@ -11,13 +11,9 @@ import ThemeSwitcher from '@/components/ThemeSwitcher';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose, // Ensure DialogClose is imported
+  DialogTrigger, // Ensure DialogTrigger is imported if used for Modul
 } from '@/components/ui/dialog';
-import { ModulPencarianDialogContent } from './ModulPencarianDialogContent'; // Import the new component
+import { ModulPencarianDialogContent } from './ModulPencarianDialogContent';
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -29,8 +25,7 @@ const navItems = [
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [isModulModalOpen, setIsModulModalOpen] = useState(false); // State for the new Modul modal
+  const [isModulModalOpen, setIsModulModalOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -67,22 +62,20 @@ const Navbar = () => {
                 <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
               </Link>
             ))}
-            {/* Desktop Search Perfume Trigger */}
-            <button
-              onClick={() => setIsSearchModalOpen(true)}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-accent transition-colors group flex items-center"
-            >
-              <Search className="mr-2 h-4 w-4" /> Cari Parfum
-              <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
-            </button>
             {/* Desktop Modul Trigger */}
-            <button
-              onClick={() => setIsModulModalOpen(true)}
-              className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-accent transition-colors group flex items-center"
-            >
-              <Database className="mr-2 h-4 w-4" /> Modul
-              <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
-            </button>
+            <Dialog open={isModulModalOpen} onOpenChange={setIsModulModalOpen}>
+              <DialogTrigger asChild>
+                <button
+                  className="relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-accent transition-colors group flex items-center"
+                >
+                  <Database className="mr-2 h-4 w-4" /> Modul
+                  <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-2xl bg-card text-card-foreground shadow-xl rounded-lg">
+                <ModulPencarianDialogContent />
+              </DialogContent>
+            </Dialog>
           </nav>
           <div className="flex items-center gap-2">
             <div className="hidden md:block">
@@ -121,19 +114,6 @@ const Navbar = () => {
                             </Link>
                           </SheetClose>
                         ))}
-                        {/* Mobile Search Perfume Trigger */}
-                        <SheetClose asChild>
-                          <button
-                            onClick={() => {
-                              setIsSearchModalOpen(true);
-                              setIsMobileMenuOpen(false);
-                            }}
-                            className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block w-full text-left flex items-center"
-                          >
-                            <Search className="mr-2 h-4 w-4" /> Cari Parfum
-                            <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
-                          </button>
-                        </SheetClose>
                         {/* Mobile Modul Trigger */}
                         <SheetClose asChild>
                           <button
@@ -160,34 +140,8 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Search Perfume Dialog */}
-      <Dialog open={isSearchModalOpen} onOpenChange={setIsSearchModalOpen}>
-        <DialogContent className="sm:max-w-md bg-card text-card-foreground">
-          <DialogHeader>
-            <DialogTitle>Pencarian Parfum</DialogTitle>
-            <DialogDescription>
-              Lanjut ntuk mengembangkan ini
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-2">
-            <p className="text-xs text-muted-foreground">Fitur pencarian akan segera hadir di sini.</p>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Tutup
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>>
-
-      {/* Modul Dialog */}
-      <Dialog open={isModulModalOpen} onOpenChange={setIsModulModalOpen}>
-        <DialogContent className="sm:max-w-2xl bg-card text-card-foreground shadow-xl rounded-lg">
-          <ModulPencarianDialogContent />
-        </DialogContent>
-      </Dialog>
+      {/* Modul Dialog Content (controlled by isModulModalOpen) is now part of the Dialog component in the desktop nav, and triggered by state change in mobile */}
+      {/* The Dialog for Modul is defined above for desktop and triggered differently for mobile */}
     </>
   );
 };
