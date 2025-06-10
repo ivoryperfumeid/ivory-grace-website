@@ -23,7 +23,7 @@ import { Loader2 } from 'lucide-react';
 import type { Perfume } from '@/types';
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { collection, getDocs, query, DocumentData } from 'firebase/firestore';
+import { collection, getDocs, query, type DocumentData } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 // Fungsi untuk mengambil data parfum dari Firestore
