@@ -9,10 +9,28 @@ import PerfumeCatalog from '@/components/PerfumeCatalog';
 import InspirationSection from '@/components/InspirationSection';
 import PriceCatalog from '@/components/PriceCatalog';
 import Footer from '@/components/Footer';
-import { SurveyDialog } from '@/components/SurveyDialog';
+// import { SurveyDialog } from '@/components/SurveyDialog'; // Remove static import
 import { ScrollToTopButton } from '@/components/ScrollToTopButton';
+import type { NextPage } from 'next';
+import dynamic from 'next/dynamic';
 
-export default function HomePage() {
+// Dynamically import SurveyDialog only if not on GitHub Pages
+// Need to explicitly type the dynamic component if its props are needed or it's not default export.
+// Assuming SurveyDialogProps are { isOpen: boolean; onOpenChange: (open: boolean) => void; }
+interface SurveyDialogProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const SurveyDialogComponent = process.env.NEXT_PUBLIC_IS_GITHUB_PAGES !== 'true'
+  ? dynamic<SurveyDialogProps>(() => import('@/components/SurveyDialog').then(mod => mod.SurveyDialog), { 
+      ssr: false,
+      // You can add a loading component if needed:
+      // loading: () => <p>Loading survey...</p> 
+    })
+  : () => null; // Render null if on GitHub Pages
+
+const HomePage: NextPage = () => {
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
   // State to control whether the survey *logic* (like setting timeout) should run and if dialog should be shown
   const [shouldActivateSurvey, setShouldActivateSurvey] = useState(false);
@@ -44,11 +62,12 @@ export default function HomePage() {
         <PriceCatalog />
       </main>
       <Footer />
-      {/* Conditionally render SurveyDialog only if not GitHub Pages and logic allows */}
-      {process.env.NEXT_PUBLIC_IS_GITHUB_PAGES !== 'true' && shouldActivateSurvey && (
-        <SurveyDialog isOpen={isSurveyOpen} onOpenChange={setIsSurveyOpen} />
-      )}
+      {/* Conditionally render SurveyDialogComponent only if logic allows */}
+      {/* The component itself will be null if on GitHub Pages due to dynamic import logic */}
+      {shouldActivateSurvey && <SurveyDialogComponent isOpen={isSurveyOpen} onOpenChange={setIsSurveyOpen} />}
       <ScrollToTopButton />
     </div>
   );
 }
+
+export default HomePage;
