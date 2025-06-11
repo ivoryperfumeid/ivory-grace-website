@@ -30,7 +30,7 @@ const PriceCatalog = () => {
         <div className="text-center mb-12">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="default" size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out rounded-full px-8 py-3 text-lg font-semibold">
+              <Button variant="default" size="lg" className="bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out rounded-full px-8 py-3 text-lg font-semibold">
                 <Search className="mr-2 h-5 w-5" />
                 Cari Semua Parfum Kami
               </Button>
