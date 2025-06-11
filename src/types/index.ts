@@ -18,5 +18,13 @@ export interface Inspiration {
   description?: string;
   associatedPerfumeId: string;
   associatedPerfumeName: string;
-  perfumeLink?: string; // URL or anchor to the perfume
+  perfumeLink?: string; // URL or anchor
+}
+
+export interface Note {
+  id: string;
+  name: string;
+  imageSrc: string; // For 400x400 images
+  description: string;
+  aiHint?: string;
 }

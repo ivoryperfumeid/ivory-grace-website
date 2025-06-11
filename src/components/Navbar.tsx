@@ -1,9 +1,9 @@
-// src/components/Navbar.tsx
+
 'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Menu, X, Search } from 'lucide-react'; // Changed Database to Search
+import { Menu, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
@@ -12,27 +12,27 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
-  DialogClose, // Ensure DialogClose is imported
 } from '@/components/ui/dialog';
 import { ModulPencarianDialogContent } from './ModulPencarianDialogContent';
 
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Video Galeri', href: '/video-gallery' },
-  { label: 'Collection', href: '/#perfume-catalog' },
+  { label: 'Notes Pedia', href: '/#notes-pedia' }, // Diubah dari Collection ke Notes Pedia
   // { label: 'Contact', href: '/#contact' },
 ];
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const [isModulModalOpen, setIsModulModalOpen] = useState(false); // Renamed from isSearchModalOpen to isModulModalOpen for clarity if needed, or keep as is if Modul IS the search
+  const [isModulModalOpen, setIsModulModalOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setIsMobileMenuOpen(false); // Selalu tutup menu mobile
     if (href.startsWith('/#')) {
       e.preventDefault();
       const targetId = href.substring(2);
@@ -40,10 +40,8 @@ const Navbar = () => {
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: 'smooth' });
       }
-      setIsMobileMenuOpen(false);
-    } else {
-      setIsMobileMenuOpen(false);
     }
+    // Untuk link non-hash, biarkan Link Next.js yang menangani navigasi
   };
 
   return (
@@ -63,7 +61,6 @@ const Navbar = () => {
                 <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
               </Link>
             ))}
-            {/* Desktop "Cari Parfum" (formerly Modul) Trigger */}
             <Dialog open={isModulModalOpen} onOpenChange={setIsModulModalOpen}>
               <DialogTrigger asChild>
                 <button
@@ -103,8 +100,8 @@ const Navbar = () => {
                       </div>
                       <nav className="flex flex-col space-y-2">
                         {navItems.map((item) => (
-                          <SheetClose key={item.label} asChild>
-                            <Link
+                           <Link
+                              key={item.label}
                               href={item.href}
                               onClick={(e) => handleLinkClick(e, item.href)}
                               className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block"
@@ -112,22 +109,18 @@ const Navbar = () => {
                               {item.label}
                               <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
                             </Link>
-                          </SheetClose>
                         ))}
-                        {/* Mobile "Cari Parfum" (formerly Modul) Trigger */}
-                        <SheetClose asChild>
-                          <button
-                            onClick={() => {
-                              setIsModulModalOpen(true);
-                              setIsMobileMenuOpen(false);
-                            }}
-                            className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block w-full text-left flex items-center"
-                            aria-label="Buka pencarian parfum"
-                          >
-                            <Search className="mr-2 h-5 w-5" /> Cari Parfum
-                            <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
-                          </button>
-                        </SheetClose>
+                        <button
+                          onClick={() => {
+                            setIsModulModalOpen(true);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="relative text-lg font-medium text-foreground hover:text-accent transition-colors py-2 group block w-full text-left flex items-center"
+                          aria-label="Buka pencarian parfum"
+                        >
+                          <Search className="mr-2 h-5 w-5" /> Cari Parfum
+                          <span className="absolute bottom-0 left-0 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-in-out"></span>
+                        </button>
                       </nav>
                       <div className="mt-auto pt-6 border-t border-border/30">
                         <ThemeSwitcher />

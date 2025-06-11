@@ -5,14 +5,13 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 const HeroSection = () => {
-  const scrollToCatalog = () => {
-    const catalogElement = document.getElementById('perfume-catalog');
-    if (catalogElement) {
-      catalogElement.scrollIntoView({ behavior: 'smooth' });
+  const scrollToNotesPedia = () => {
+    const notesPediaElement = document.getElementById('notes-pedia'); // Target diubah ke notes-pedia
+    if (notesPediaElement) {
+      notesPediaElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // Style object for initial opacity to prevent flash of unstyled content before animation
   const initialStyle = { opacity: 0 };
 
   return (
@@ -46,10 +45,10 @@ const HeroSection = () => {
         >
           <Button
             size="lg"
-            onClick={scrollToCatalog}
+            onClick={scrollToNotesPedia} // Fungsi diubah
             className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out"
           >
-            Explore Our Collection
+            Jelajahi Notes Aroma Kami {/* Teks tombol diubah */}
           </Button>
         </div>
       </div>

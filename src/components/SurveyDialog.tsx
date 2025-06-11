@@ -1,17 +1,16 @@
 
 'use client';
 
-import { Perfume } from '@/types';
+import type { Perfume } from '@/types';
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Loader2, X } from 'lucide-react';
+import { Loader2, X, Leaf } from 'lucide-react'; // Menambahkan Leaf
 import { perfumes } from '@/data/perfumes';
 import Image from 'next/image';
 import Link from 'next/link';
-// Import the Genkit flow
 import { suggestPerfume, SuggestPerfumeInput, SuggestPerfumeOutput } from '@/ai/flows/suggest-perfume-flow';
 
 interface SurveyDialogProps {
@@ -63,10 +62,8 @@ export function SurveyDialog({ isOpen, onOpenChange }: SurveyDialogProps) {
 
   const handleClose = () => {
     onOpenChange(false);
-    // Optionally, reset survey only when explicitly closed before completion,
-    // or when reopened after completion. For now, we reset on any close.
     localStorage.setItem('surveyDialogDismissed', 'true');
-    setTimeout(resetSurvey, 300); // Delay reset to allow dialog to close smoothly
+    setTimeout(resetSurvey, 300); 
   };
   
   const handleNext = () => {
@@ -103,8 +100,8 @@ export function SurveyDialog({ isOpen, onOpenChange }: SurveyDialogProps) {
       } else {
         setError(`Parfum yang direkomendasikan (ID: ${flowResult.perfumeId}) tidak ditemukan dalam data kami.`);
       }
-      setCurrentStep(surveySteps.length + 1); // Move to result step
-      localStorage.setItem('surveyDialogCompleted', 'true'); // Mark as completed
+      setCurrentStep(surveySteps.length + 1); 
+      localStorage.setItem('surveyDialogCompleted', 'true'); 
     } catch (e) {
       console.error("Error suggesting perfume:", e);
       setError("Maaf, terjadi kesalahan saat membuat rekomendasi. Silakan coba lagi.");
@@ -116,10 +113,25 @@ export function SurveyDialog({ isOpen, onOpenChange }: SurveyDialogProps) {
   const currentSurveyStep = surveySteps[currentStep - 1];
   const canProceed = currentSurveyStep ? !!answers[currentSurveyStep.answerKey] : false;
 
+  // Fungsi untuk menangani klik pada link/tombol setelah hasil survei
+  const handleResultLinkClick = () => {
+    // Tutup dialog
+    handleClose();
+    // Scroll ke notes-pedia setelah dialog ditutup dan DOM diperbarui
+    // Memberi sedikit waktu agar dialog benar-benar hilang sebelum scroll
+    setTimeout(() => {
+        const notesPediaElement = document.getElementById('notes-pedia');
+        if (notesPediaElement) {
+            notesPediaElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, 100); 
+  };
+
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); else onOpenChange(true); }}>
       <DialogContent className="sm:max-w-md bg-card text-card-foreground shadow-xl rounded-lg">
-        <DialogHeader className="pr-10"> {/* Add padding for the close button */}
+        <DialogHeader className="pr-10"> 
           <DialogTitle className="text-2xl font-headline">
             {currentStep <= surveySteps.length ? `Langkah ${currentStep}: Temukan Parfum Sempurnamu!` : "Rekomendasi Untuk Anda"}
           </DialogTitle>
@@ -179,8 +191,12 @@ export function SurveyDialog({ isOpen, onOpenChange }: SurveyDialogProps) {
                 <p className="text-md font-semibold text-accent mt-1">{suggestedPerfumeDetails.price}</p>
               </div>
             </div>
-            <Button asChild className="w-full mt-4 bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleClose}>
-              <Link href={`/#perfume-catalog`}>Lihat Detail Parfum</Link>
+            {/* Tombol diubah untuk mengarah ke Notes Pedia */}
+            <Button 
+                onClick={handleResultLinkClick}
+                className="w-full mt-4 bg-accent text-accent-foreground hover:bg-accent/90"
+            >
+              <Leaf className="mr-2 h-4 w-4" /> Pelajari Notes Aroma {/* Teks dan ikon diubah */}
             </Button>
           </div>
         )}
@@ -196,8 +212,8 @@ export function SurveyDialog({ isOpen, onOpenChange }: SurveyDialogProps) {
                 Kembali
               </Button>
              )}
-             {currentStep > surveySteps.length && ( // Show a different button on result screen
-                <Button variant="outline" onClick={() => { resetSurvey(); onOpenChange(true); /* Reopen to start survey */ }}>
+             {currentStep > surveySteps.length && ( 
+                <Button variant="outline" onClick={() => { resetSurvey(); onOpenChange(true); }}>
                   Ulangi Survei
                 </Button>
              )}
@@ -214,5 +230,3 @@ export function SurveyDialog({ isOpen, onOpenChange }: SurveyDialogProps) {
     </Dialog>
   );
 }
-
-    
