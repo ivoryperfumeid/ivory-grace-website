@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Droplet } from 'lucide-react';
+import { Button } from '@/components/ui/button'; // Import Button
+import { Droplet, ShoppingCart } from 'lucide-react'; // Import ShoppingCart
 
 const priceData = [
   { id: 'price-15ml', size: '15ml', price: 'Rp 20.000' },
@@ -10,6 +11,8 @@ const priceData = [
 ];
 
 const PriceCatalog = () => {
+  const whatsappLink = "https://wa.me/62895372115913"; // Nomor WhatsApp Anda
+
   return (
     <section id="price-catalog" className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,6 +47,17 @@ const PriceCatalog = () => {
         <p className="text-center text-sm text-foreground/70 mt-8 max-w-xl mx-auto">
           Harga berlaku untuk refill parfum standar. Campuran khusus atau esens premium mungkin memiliki harga berbeda. Silakan hubungi kami untuk detail lebih lanjut.
         </p>
+        <div className="text-center mt-10">
+          <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+            <Button
+              size="lg"
+              className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out"
+            >
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              Pesan Sekarang
+            </Button>
+          </a>
+        </div>
       </div>
     </section>
   );
