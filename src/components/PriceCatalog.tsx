@@ -1,7 +1,13 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button'; // Import Button
-import { Droplet, ShoppingCart } from 'lucide-react'; // Import ShoppingCart
+import { Button } from '@/components/ui/button';
+import { Droplet, ShoppingCart, Search } from 'lucide-react'; // Import Search icon
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from '@/components/ui/dialog'; // Import Dialog components
+import { ModulPencarianDialogContent } from '@/components/ModulPencarianDialogContent'; // Import modal content
 
 const priceData = [
   { id: 'price-15ml', size: '15ml', price: 'Rp 20.000' },
@@ -16,9 +22,25 @@ const PriceCatalog = () => {
   return (
     <section id="price-catalog" className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-12 text-foreground">
+        <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-8 text-foreground">
           Pilihan Ukuran & Harga Refill
         </h2>
+
+        {/* Tombol Cari Parfum Baru */}
+        <div className="text-center mb-12">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="default" size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out rounded-full px-8 py-3 text-lg font-semibold">
+                <Search className="mr-2 h-5 w-5" />
+                Cari Semua Parfum Kami
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-2xl bg-card text-card-foreground shadow-xl rounded-lg">
+              <ModulPencarianDialogContent />
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <div className="max-w-2xl mx-auto">
           <Card className="shadow-lg rounded-lg border-border/50 bg-card">
             <CardHeader>
