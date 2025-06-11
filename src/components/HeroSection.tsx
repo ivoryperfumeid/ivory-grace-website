@@ -12,8 +12,11 @@ const HeroSection = () => {
     }
   };
 
+  // Style object for initial opacity to prevent flash of unstyled content before animation
+  const initialStyle = { opacity: 0 };
+
   return (
-    <section className="relative bg-gradient-to-br from-primary/30 via-background to-background py-20 md:py-32 min-h-[calc(100vh-4rem)] flex items-center">
+    <section className="relative bg-gradient-to-br from-primary/30 via-background to-background py-20 md:py-32 min-h-[calc(100vh-4rem)] flex items-center overflow-hidden">
       <div className="absolute inset-0 opacity-20">
         <Image
           src="https://placehold.co/1920x1080.png"
@@ -25,13 +28,22 @@ const HeroSection = () => {
         />
       </div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold font-headline tracking-tight text-foreground">
+        <h1
+          className="text-4xl sm:text-5xl md:text-6xl font-bold font-headline tracking-tight text-foreground animate-fade-in-up"
+          style={{ ...initialStyle, animationDelay: '0.2s' }}
+        >
           Ivory & Grace
         </h1>
-        <p className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-foreground/80 font-body">
+        <p
+          className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-foreground/80 font-body animate-fade-in-up"
+          style={{ ...initialStyle, animationDelay: '0.4s' }}
+        >
           Experience the art of fine perfumery. Discover exquisite scents meticulously crafted to evoke grace and sophistication.
         </p>
-        <div className="mt-10">
+        <div
+          className="mt-10 animate-fade-in-up"
+          style={{ ...initialStyle, animationDelay: '0.6s' }}
+        >
           <Button
             size="lg"
             onClick={scrollToCatalog}
