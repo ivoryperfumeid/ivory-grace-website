@@ -3,8 +3,8 @@ import type { Perfume } from '@/types';
 
 // Contoh ID Video YouTube untuk placeholder
 const youtubeVideoId1 = "L_LUpnjgPso"; // Nature scene
-const youtubeVideoId2 = "LXb3EKWsInQ"; // Short cinematic
-const youtubeVideoId3 = "3JZ_D3ELwOQ"; // Abstract animation
+const youtubeVideoId2 = "VuMZgIhiGjg"; // Short cinematic
+const youtubeVideoId3 = "_zK35iw__qY"; // Abstract animation
 const youtubeVideoId4 = "QH2-TGUlwu4"; // Another nature
 const youtubeVideoId5 = "rokGy0huYEA"; // Product style video
 

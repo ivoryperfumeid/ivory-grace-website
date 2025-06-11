@@ -8,12 +8,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollToTopButton } from '@/components/ScrollToTopButton';
 import Image from 'next/image';
 import { useState } from 'react';
+import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog'; // Import Dialog components
+import { Button } from '@/components/ui/button';
+import { X, PlayCircle } from 'lucide-react'; // Import X for close, PlayCircle for overlay
 
 interface PerfumeVideo {
   id: string;
   name: string;
-  imageSrc: string; // URL untuk thumbnail
-  videoSrc?: string; // SEKARANG: ID Video YouTube
+  imageSrc: string;
+  videoSrc?: string;
   aiHint?: string;
 }
 
@@ -22,8 +25,7 @@ const getYouTubeEmbedUrl = (videoId: string, autoplay = false, controls = true) 
   const params = new URLSearchParams();
   if (autoplay) params.append('autoplay', '1');
   if (controls) params.append('controls', '1');
-  // Anda bisa menambahkan parameter lain jika perlu, misal: rel=0, modestbranding=1
-  params.append('rel', '0'); 
+  params.append('rel', '0');
   params.append('modestbranding', '1');
 
   const paramString = params.toString();
@@ -33,11 +35,28 @@ const getYouTubeEmbedUrl = (videoId: string, autoplay = false, controls = true) 
   return url;
 };
 
-
 export default function VideoGalleryPage() {
-  // Filter parfum yang memiliki videoSrc (ID video YouTube)
   const videos: PerfumeVideo[] = perfumes.filter(perfume => perfume.videoSrc);
-  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null); // Menyimpan ID parfum yang videonya sedang diputar
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
+  const [currentVideoName, setCurrentVideoName] = useState<string | null>(null);
+
+  const openVideoModal = (video: PerfumeVideo) => {
+    if (video.videoSrc) {
+      setCurrentVideoUrl(getYouTubeEmbedUrl(video.videoSrc, true, true));
+      setCurrentVideoName(video.name);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleModalOpenChange = (open: boolean) => {
+    setIsModalOpen(open);
+    if (!open) {
+      setCurrentVideoUrl(null); // Clear src to stop video playback
+      setCurrentVideoName(null);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -50,38 +69,28 @@ export default function VideoGalleryPage() {
           {videos.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {videos.map((video) => (
-                <Card key={video.id} className="group overflow-hidden shadow-lg hover:shadow-xl flex flex-col h-full rounded-lg border-border/50 transform hover:-translate-y-1 transition-all duration-300 ease-in-out">
+                <Card 
+                  key={video.id} 
+                  className="group overflow-hidden shadow-lg hover:shadow-xl flex flex-col h-full rounded-lg border-border/50 transform hover:-translate-y-1 transition-all duration-300 ease-in-out"
+                >
                   <CardHeader className="p-0">
-                    <div className="aspect-video relative w-full overflow-hidden rounded-t-lg">
-                      {playingVideoId === video.id && video.videoSrc ? (
-                        <iframe
-                          src={getYouTubeEmbedUrl(video.videoSrc, true, true)} // Autoplay, controls
-                          title={`Video player for ${video.name}`}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                          className="absolute top-0 left-0 w-full h-full"
-                        ></iframe>
-                      ) : (
-                        <>
-                          {/* Idealnya, imageSrc adalah thumbnail dari video YouTube atau gambar yang relevan */}
-                          <Image
-                            src={video.imageSrc} 
-                            alt={`Thumbnail for ${video.name}`}
-                            data-ai-hint={video.aiHint || "product video thumbnail"}
-                            layout="fill"
-                            objectFit="cover"
-                            className="transition-transform duration-300 ease-in-out group-hover:scale-105 cursor-pointer"
-                            onClick={() => video.videoSrc && setPlayingVideoId(video.id)}
-                          />
-                          <div 
-                            className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                            onClick={() => video.videoSrc && setPlayingVideoId(video.id)}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play-circle opacity-80"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16 10,8"/></svg>
-                          </div>
-                        </>
-                      )}
+                    <div 
+                      className="aspect-video relative w-full overflow-hidden rounded-t-lg cursor-pointer"
+                      onClick={() => openVideoModal(video)}
+                    >
+                      <Image
+                        src={video.imageSrc}
+                        alt={`Thumbnail for ${video.name}`}
+                        data-ai-hint={video.aiHint || "product video thumbnail"}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition-transform duration-300 ease-in-out group-hover:scale-105"
+                      />
+                      <div
+                        className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      >
+                        <PlayCircle size={64} className="text-white/80" />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6 flex-grow">
@@ -99,6 +108,37 @@ export default function VideoGalleryPage() {
       </main>
       <Footer />
       <ScrollToTopButton />
+
+      {/* Video Modal Dialog */}
+      <Dialog open={isModalOpen} onOpenChange={handleModalOpenChange}>
+        <DialogContent 
+          className="bg-black/80 border-none shadow-2xl p-0 max-w-screen-lg w-11/12 aspect-video overflow-hidden rounded-lg flex items-center justify-center"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          {currentVideoUrl && (
+            <div className="relative w-full h-full">
+              <iframe
+                src={currentVideoUrl}
+                title={`Video player for ${currentVideoName || 'Video'}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="w-full h-full rounded-lg"
+              ></iframe>
+              <DialogClose asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 text-white bg-black/60 hover:bg-black/80 rounded-full z-50 p-2"
+                  aria-label="Close video player"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </DialogClose>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
