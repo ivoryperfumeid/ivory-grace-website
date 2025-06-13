@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import { ScrollToTopButton } from '@/components/ScrollToTopButton';
 import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
+import CustomerAIChat from '@/components/CustomerAIChat'; // Import the new AI Chat component
 
 interface SurveyDialogProps {
   isOpen: boolean;
@@ -47,16 +48,16 @@ const HomePage: NextPage = () => {
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <main className="flex-grow">
-        <PriceCatalog /> {/* Dipindahkan ke sini */}
+        <PriceCatalog />
         <HeroSection />
         <FeaturedProducts />
         <NotesPedia />
         <InspirationSection />
-        {/* PriceCatalog dipindahkan dari sini */}
       </main>
       <Footer />
       {shouldActivateSurvey && <SurveyDialogComponent isOpen={isSurveyOpen} onOpenChange={setIsSurveyOpen} />}
       <ScrollToTopButton />
+      <CustomerAIChat /> {/* Add the AI Chat component here */}
     </div>
   );
 }

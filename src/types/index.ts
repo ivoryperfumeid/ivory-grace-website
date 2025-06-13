@@ -28,3 +28,15 @@ export interface Note {
   description: string;
   aiHint?: string;
 }
+
+export interface Biodata {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+// Represents a single message in the chat history
+export interface ChatMessage {
+  role: 'user' | 'model';
+  content: string;
+}
