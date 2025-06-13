@@ -67,14 +67,14 @@ Conversation History (most recent is user's last message, if history exists):
 - user: {{{message}}}
 
 Instructions:
-1.  If this is the very first message and \`currentBiodata\` is empty and \`chatHistory\` is empty, introduce yourself and ask for the name. Set \`fieldToRequestNext\` to "name". Example: {"aiResponse": "Welcome to Ivory & Grace! I'm here to help. To get started, could I please have your full name?", "fieldToRequestNext": "name"}
+1.  If this is the very first message (user's message is "User opened chat" or similar indication of initiation) AND \`currentBiodata\` is empty AND \`chatHistory\` is empty, introduce yourself and ask for the name. Set \`fieldToRequestNext\` to "name". Example: {"aiResponse": "Selamat datang di Ivory & Grace! Saya adalah AI Assistant yang dikembangkan oleh Robby Viory Fansya selaku CEO Ivory & Grace. Untuk memulai, boleh saya tahu nama lengkap Anda?", "fieldToRequestNext": "name"}
 2.  If name is MISSING in \`currentBiodata\`, set \`fieldToRequestNext\` to "name" and craft \`aiResponse\` to ask for the full name.
-3.  If name is provided in \`currentBiodata\` but email is MISSING, set \`fieldToRequestNext\` to "email" and craft \`aiResponse\` to ask for the email. Acknowledge the name if just provided. Example: "Thanks, {{currentBiodata.name}}! What's your email address?"
+3.  If name is provided in \`currentBiodata\` but email is MISSING, set \`fieldToRequestNext\` to "email" and craft \`aiResponse\` to ask for the email. Acknowledge the name if just provided. Example: "Terima kasih, {{currentBiodata.name}}! Apa alamat email Anda?"
 4.  If name and email are provided in \`currentBiodata\` but phone is MISSING, set \`fieldToRequestNext\` to "phone" and craft \`aiResponse\` to ask for the phone number. Acknowledge email if just provided.
-5.  If all (name, email, phone) are provided by the client in \`currentBiodata\`, set \`fieldToRequestNext\` to "confirmation". Craft \`aiResponse\` to summarize the collected data (Name: {{currentBiodata.name}}, Email: {{currentBiodata.email}}, Phone: {{currentBiodata.phone}}) and ask "Is this information correct?".
-6.  If \`fieldToRequestNext\` was "confirmation" (meaning you previously asked for confirmation) and user's current message confirms (e.g., "yes", "correct", "that's right"), set \`isConversationComplete\` to true, \`fieldToRequestNext\` to "none", and \`aiResponse\` to a thank you message like "Perfect! Thank you for providing your details. Have a wonderful day!".
-7.  If \`fieldToRequestNext\` was "confirmation" and user's current message indicates a correction (e.g., "no, my email is wrong", "my phone number is incorrect"), try to understand which field to correct. If they say "email is wrong", set \`fieldToRequestNext\` to "email" and \`aiResponse\` to "Okay, what is your correct email address?". Do similarly for name or phone. If they say "no" without specifying, ask "Okay, which part is incorrect? Name, email, or phone?".
-8.  If the user asks an unrelated question, politely steer them back: "I can help with other questions once we've completed this. For now, could we continue with..." and then repeat the relevant question for the current field (name, email, phone, or confirmation).
+5.  If all (name, email, phone) are provided by the client in \`currentBiodata\`, set \`fieldToRequestNext\` to "confirmation". Craft \`aiResponse\` to summarize the collected data (Name: {{currentBiodata.name}}, Email: {{currentBiodata.email}}, Phone: {{currentBiodata.phone}}) and ask "Apakah informasi ini sudah benar?".
+6.  If \`fieldToRequestNext\` was "confirmation" (meaning you previously asked for confirmation) and user's current message confirms (e.g., "yes", "correct", "that's right", "sudah benar"), set \`isConversationComplete\` to true, \`fieldToRequestNext\` to "none", and \`aiResponse\` to a thank you message like "Sempurna! Terima kasih telah memberikan detail Anda. Semoga hari Anda menyenangkan!".
+7.  If \`fieldToRequestNext\` was "confirmation" and user's current message indicates a correction (e.g., "no, my email is wrong", "my phone number is incorrect", "salah", "emailnya salah"), try to understand which field to correct. If they say "email is wrong", set \`fieldToRequestNext\` to "email" and \`aiResponse\` to "Baik, apa alamat email Anda yang benar?". Do similarly for name or phone. If they say "no" without specifying, ask "Baik, bagian mana yang salah? Nama, email, atau nomor telepon?".
+8.  If the user asks an unrelated question, politely steer them back: "Saya bisa bantu dengan pertanyaan lain setelah kita menyelesaikan ini. Untuk sekarang, bisakah kita melanjutkan dengan..." and then repeat the relevant question for the current field (name, email, phone, or confirmation).
 9.  Ensure \`aiResponse\` is conversational and friendly.
 
 Respond ONLY with a JSON object matching the CustomerBiodataChatOutputSchema.
@@ -108,7 +108,7 @@ const customerBiodataChatFlow = ai.defineFlow(
       else if (currentBiodata.name && currentBiodata.email && currentBiodata.phone) fallbackField = 'confirmation';
       
       return {
-        aiResponse: "I'm having a little trouble processing that. Could you try rephrasing or provide the information again?",
+        aiResponse: "Maaf, saya mengalami sedikit kendala. Bisakah Anda mencoba lagi?",
         isConversationComplete: false,
         fieldToRequestNext: fallbackField,
       };
