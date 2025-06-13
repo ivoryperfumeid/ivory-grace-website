@@ -1,11 +1,12 @@
+
 'use client';
 
-import { MessageCircleHeart, Sparkles, Truck } from 'lucide-react';
+import { MessageCircleHeart, Sparkles, Truck, Percent } from 'lucide-react'; // Menambahkan Percent
 
 const MarqueeBanner = () => {
   const bannerSegments = [
     { text: "Selamat datang di Ivory & Grace!", icon: Sparkles },
-    { text: "Temukan diskon spesial untuk pembelian pertama Anda.", icon: null },
+    { text: "Temukan diskon spesial untuk Customer VIP.", icon: Percent }, // Diubah
     { text: "Butuh bantuan? AI Assistant kami siap membantu Anda!", icon: MessageCircleHeart },
     { text: "Gratis Ongkir untuk wilayah Jabodetabek!", icon: Truck },
   ];
