@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* ADDED FOR DIAGNOSIS: Explicit title to check if layout.tsx is rendered */}
-        <title>Ivory & Grace - Test Title From Layout</title>
+        <title>Make your Own Style!</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
@@ -31,7 +31,7 @@ export default function RootLayout({
         <QueryProvider> {/* Use the new QueryProvider */}
           <ThemeProvider>
             {/* Navbar is rendered per page, MarqueeBanner will be sticky below it */}
-            <MarqueeBanner /> 
+            <MarqueeBanner />
             {children}
             <Toaster />
           </ThemeProvider>
