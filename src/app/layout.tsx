@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/context/ThemeContext';
 import { QueryProvider } from '@/context/QueryProvider'; // Import the new QueryProvider
+import MarqueeBanner from '@/components/MarqueeBanner'; // Import the new MarqueeBanner component
 
 export const metadata: Metadata = {
   title: 'Ivory & Grace Perfumes | Scented Elegance',
@@ -29,6 +30,8 @@ export default function RootLayout({
       <body className="font-body antialiased" suppressHydrationWarning>
         <QueryProvider> {/* Use the new QueryProvider */}
           <ThemeProvider>
+            {/* Navbar is rendered per page, MarqueeBanner will be sticky below it */}
+            <MarqueeBanner /> 
             {children}
             <Toaster />
           </ThemeProvider>
