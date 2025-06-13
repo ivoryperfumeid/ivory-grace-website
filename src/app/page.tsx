@@ -12,7 +12,7 @@ import Footer from '@/components/Footer';
 import { ScrollToTopButton } from '@/components/ScrollToTopButton';
 import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
-import CustomerAIChat from '@/components/CustomerAIChat'; // Import the new AI Chat component
+// Static import of CustomerAIChat removed
 
 interface SurveyDialogProps {
   isOpen: boolean;
@@ -22,6 +22,13 @@ interface SurveyDialogProps {
 const SurveyDialogComponent = process.env.NEXT_PUBLIC_IS_GITHUB_PAGES !== 'true'
   ? dynamic<SurveyDialogProps>(() => import('@/components/SurveyDialog').then(mod => mod.SurveyDialog), {
       ssr: false,
+    })
+  : () => null;
+
+// Dynamically import CustomerAIChat
+const CustomerAIChatComponent = process.env.NEXT_PUBLIC_IS_GITHUB_PAGES !== 'true'
+  ? dynamic(() => import('@/components/CustomerAIChat'), { 
+      ssr: false, 
     })
   : () => null;
 
@@ -55,9 +62,9 @@ const HomePage: NextPage = () => {
         <InspirationSection />
       </main>
       <Footer />
-      {shouldActivateSurvey && <SurveyDialogComponent isOpen={isSurveyOpen} onOpenChange={setIsSurveyOpen} />}
+      {shouldActivateSurvey && SurveyDialogComponent && <SurveyDialogComponent isOpen={isSurveyOpen} onOpenChange={setIsSurveyOpen} />}
       <ScrollToTopButton />
-      <CustomerAIChat /> {/* Add the AI Chat component here */}
+      {CustomerAIChatComponent && <CustomerAIChatComponent />} {/* Use the dynamically imported component */}
     </div>
   );
 }
