@@ -89,31 +89,46 @@ const customerBiodataChatFlow = ai.defineFlow(
     outputSchema: CustomerBiodataChatOutputSchema,
   },
   async (input) => {
-    // Ensure currentBiodata is at least an empty object if undefined
     const currentBiodata = input.currentBiodata || {};
     const chatHistory = input.chatHistory || [];
 
     const promptInput = {
       ...input,
-      currentBiodata, // Use the ensured object
-      chatHistory,    // Use the ensured array
+      currentBiodata,
+      chatHistory,
     };
 
-    const { output } = await prompt(promptInput);
-    if (!output) {
-      // Fallback response if LLM fails to provide structured output
-      let fallbackField: 'name' | 'email' | 'phone' | 'confirmation' | 'none' = 'name';
-      if (currentBiodata.name && !currentBiodata.email) fallbackField = 'email';
-      else if (currentBiodata.name && currentBiodata.email && !currentBiodata.phone) fallbackField = 'phone';
-      else if (currentBiodata.name && currentBiodata.email && currentBiodata.phone) fallbackField = 'confirmation';
-      
+    try {
+      const { output } = await prompt(promptInput);
+      if (!output) {
+        // Fallback response if LLM returns no output but call was successful
+        let fallbackField: 'name' | 'email' | 'phone' | 'confirmation' | 'none' = 'name';
+        if (currentBiodata.name && !currentBiodata.email) fallbackField = 'email';
+        else if (currentBiodata.name && currentBiodata.email && !currentBiodata.phone) fallbackField = 'phone';
+        else if (currentBiodata.name && currentBiodata.email && currentBiodata.phone) fallbackField = 'confirmation';
+        
+        return {
+          aiResponse: "Maaf, saya mengalami sedikit kendala dalam memproses permintaan Anda. Bisakah Anda mencoba lagi?",
+          isConversationComplete: false,
+          fieldToRequestNext: fallbackField,
+        };
+      }
+      return output;
+    } catch (error) {
+      console.error("Error calling AI prompt in customerBiodataChatFlow:", error);
+      // Determine fallback field based on current biodata
+      let fallbackFieldOnError: 'name' | 'email' | 'phone' | 'confirmation' | 'none' = 'name';
+      if (currentBiodata.name && !currentBiodata.email) fallbackFieldOnError = 'email';
+      else if (currentBiodata.name && currentBiodata.email && !currentBiodata.phone) fallbackFieldOnError = 'phone';
+      else if (currentBiodata.name && currentBiodata.email && currentBiodata.phone) fallbackFieldOnError = 'confirmation';
+      // else it defaults to 'name'
+
       return {
-        aiResponse: "Maaf, saya mengalami sedikit kendala. Bisakah Anda mencoba lagi?",
+        aiResponse: "Maaf, terjadi kendala saat menghubungi layanan AI kami. Mohon coba beberapa saat lagi atau hubungi dukungan pelanggan jika masalah berlanjut.",
         isConversationComplete: false,
-        fieldToRequestNext: fallbackField,
+        fieldToRequestNext: fallbackFieldOnError,
       };
     }
-    return output;
   }
 );
 
