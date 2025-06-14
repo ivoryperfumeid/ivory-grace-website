@@ -52,6 +52,7 @@ const FeaturedProducts = () => {
       clearTimeout(previewTimeoutRef.current);
       previewTimeoutRef.current = null;
     }
+    // setCurrentPlayingVideoId(null); // Ensure video stops immediately on mouse leave
   };
 
   return (
@@ -74,7 +75,7 @@ const FeaturedProducts = () => {
                   onMouseEnter={() => handleMouseEnter(item.id, item.videoSrc)}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <div className="relative aspect-[16/9] w-full"> {/* Changed aspect ratio to 16/9 for standard video thumbnails */}
+                  <div className="relative aspect-video w-full"> {/* Use aspect-video for 16:9 */}
                     {currentPlayingVideoId === item.id && item.videoSrc ? (
                       <iframe
                         key={item.id + '-player'}
