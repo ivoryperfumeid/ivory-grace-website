@@ -2,11 +2,11 @@
 import type { Perfume } from '@/types';
 
 // Contoh ID Video YouTube untuk placeholder
-const youtubeVideoId1 = "L_LUpnjgPso"; // Nature scene
+const youtubeVideoId1 = "Di7XNO8cB2s"; // Nature scene
 const youtubeVideoId2 = "VuMZgIhiGjg"; // Short cinematic
 const youtubeVideoId3 = "_zK35iw__qY"; // Abstract animation
-const youtubeVideoId4 = "QH2-TGUlwu4"; // Another nature
-const youtubeVideoId5 = "rokGy0huYEA"; // Product style video
+const youtubeVideoId4 = "x-QJCml3tos"; // Another nature
+const youtubeVideoId5 = "5IKe1Y4fzN8"; // Product style video
 
 export const perfumes: Perfume[] = [
   {
@@ -43,10 +43,11 @@ export const perfumes: Perfume[] = [
     id: '4',
     name: 'Ivory Elixir Pure Perfume',
     imageSrc: 'https://placehold.co/400x600.png',
-    // videoSrc: undefined, // Tidak ada video untuk produk ini
+    videoSrc: youtubeVideoId1, // Ditambahkan videoSrc
     aiHint: 'classic perfume gold',
     description: 'The signature scent of Ivory & Grace. A timeless composition of rare iris, creamy vanilla, and a hint of spice.',
     price: 'Rp 3.500.000',
+    isFeatured: true, // Dijadikan featured
   },
   {
     id: '5',
@@ -56,7 +57,7 @@ export const perfumes: Perfume[] = [
     aiHint: 'perfume bottle night',
     description: 'An alluring and seductive fragrance with notes of black orchid, patchouli, and dark chocolate. For moments of intrigue.',
     price: 'Rp 1.500.000',
-    isFeatured: true, // Dijadikan featured agar muncul di FeaturedProducts
+    isFeatured: true,
   },
   {
     id: '6',

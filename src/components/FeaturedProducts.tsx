@@ -9,8 +9,8 @@ import { CirclePlay, Film } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 const FeaturedProducts = () => {
-  // Filter items that are featured and have a video source
-  const featuredItems = perfumes.filter(p => p.isFeatured && p.videoSrc).slice(0, 4);
+  // Filter items that are featured and have a video source, take up to 6
+  const featuredItems = perfumes.filter(p => p.isFeatured && p.videoSrc).slice(0, 6);
   const [currentPlayingVideoId, setCurrentPlayingVideoId] = useState<string | null>(null);
   const previewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -66,7 +66,7 @@ const FeaturedProducts = () => {
             {featuredItems.map((item, index) => {
               // Since featuredItems are filtered to only include those with videoSrc,
               // item.videoSrc is guaranteed to be defined here.
-              const youtubeThumbnailUrl = `https://i.ytimg.com/vi/${item.videoSrc}/hqdefault.jpg`;
+              const youtubeThumbnailUrl = `https://i.ytimg.com/vi/${item.videoSrc!}/hqdefault.jpg`;
 
               return (
                 <div
@@ -75,7 +75,7 @@ const FeaturedProducts = () => {
                   onMouseEnter={() => handleMouseEnter(item.id, item.videoSrc)}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <div className="relative aspect-[2/3] w-full"> {/* Diubah ke rasio aspek 2:3 */}
+                  <div className="relative aspect-[2/3] w-full"> {/* Rasio aspek potret 2:3 */}
                     {currentPlayingVideoId === item.id && item.videoSrc ? (
                       <iframe
                         key={item.id + '-player'}
@@ -135,4 +135,3 @@ const FeaturedProducts = () => {
 };
 
 export default FeaturedProducts;
-
