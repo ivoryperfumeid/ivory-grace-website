@@ -1,3 +1,4 @@
+
 /** @type {import('next').NextConfig} */
 
 // Menentukan apakah build ini untuk GitHub Pages
@@ -21,6 +22,12 @@ const nextConfig = {
         hostname: 'placehold.co',
         port: '',
         pathname: '/**',
+      },
+      { // Ditambahkan untuk thumbnail YouTube
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        port: '',
+        pathname: '/vi/**',
       },
     ],
     // Hanya unoptimize gambar jika membangun untuk GitHub Pages
