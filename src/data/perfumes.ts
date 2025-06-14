@@ -5,8 +5,9 @@ import type { Perfume } from '@/types';
 const youtubeVideoId1 = "Di7XNO8cB2s"; // Nature scene
 const youtubeVideoId2 = "VuMZgIhiGjg"; // Short cinematic
 const youtubeVideoId3 = "_zK35iw__qY"; // Abstract animation
-const youtubeVideoId4 = "x-QJCml3tos"; // Another nature
+const youtubeVideoId4 = "YX-jHe94ng4"; // Another nature
 const youtubeVideoId5 = "5IKe1Y4fzN8"; // Product style video
+const youtubeVideoId6 = "xjf5Z9zXjug"; // Product Scent video
 
 export const perfumes: Perfume[] = [
   {
@@ -43,7 +44,7 @@ export const perfumes: Perfume[] = [
     id: '4',
     name: 'Ivory Elixir Pure Perfume',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: youtubeVideoId1, // Ditambahkan videoSrc
+    videoSrc: youtubeVideoId4, // Ditambahkan videoSrc
     aiHint: 'classic perfume gold',
     description: 'The signature scent of Ivory & Grace. A timeless composition of rare iris, creamy vanilla, and a hint of spice.',
     price: 'Rp 3.500.000',
@@ -63,7 +64,7 @@ export const perfumes: Perfume[] = [
     id: '6',
     name: 'Sun-kissed Citrus Eau Fraiche',
     imageSrc: 'https://placehold.co/400x600.png',
-    videoSrc: youtubeVideoId4, // ID Video YouTube
+    videoSrc: youtubeVideoId6, // ID Video YouTube
     aiHint: 'fresh perfume citrus',
     description: 'A vibrant and refreshing spritz of Sicilian lemon, mandarin, and neroli. Captures the joy of a summer morning.',
     price: 'Rp 750.000',
