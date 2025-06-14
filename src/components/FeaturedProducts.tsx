@@ -75,7 +75,7 @@ const FeaturedProducts = () => {
                   onMouseEnter={() => handleMouseEnter(item.id, item.videoSrc)}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <div className="relative aspect-video w-full"> {/* Use aspect-video for 16:9 */}
+                  <div className="relative aspect-[2/3] w-full"> {/* Diubah ke rasio aspek 2:3 */}
                     {currentPlayingVideoId === item.id && item.videoSrc ? (
                       <iframe
                         key={item.id + '-player'}
@@ -135,3 +135,4 @@ const FeaturedProducts = () => {
 };
 
 export default FeaturedProducts;
+
